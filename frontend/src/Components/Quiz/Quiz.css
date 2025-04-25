@@ -1,0 +1,135 @@
+.quiz-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.quiz-container {
+  background: #1a1a2e;
+  border-radius: 15px;
+  padding: 30px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.quiz-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.quiz-header h2 {
+  color: #6b46c1;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.question {
+  margin-bottom: 25px;
+}
+
+.question p {
+  color: #00ff95;
+  font-size: 20px;
+  line-height: 1.5;
+  text-align: center;
+  font-weight: 500;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.answer-button {
+  padding: 15px;
+  border: 2px solid #6b46c1;
+  border-radius: 8px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-size: 16px;
+}
+
+.answer-button:hover {
+  background: rgba(107, 70, 193, 0.2);
+}
+
+.answer-button.selected {
+  background: #6b46c1;
+  color: white;
+}
+
+.next-button, .submit-button {
+  width: 100%;
+  padding: 15px;
+  background: #6b46c1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.next-button:disabled {
+  background: #4a4a4a;
+  cursor: not-allowed;
+}
+
+.result-container {
+  text-align: center;
+  color: white;
+}
+
+.question-number {
+  color: #888;
+  font-size: 14px;
+}
+
+.score-display {
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.score-display p {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.correct {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.incorrect {
+  color: #f44336;
+  font-weight: bold;
+  font-size: 24px;
+}
