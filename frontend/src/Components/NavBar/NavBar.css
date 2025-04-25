@@ -1,0 +1,107 @@
+.nav_con {
+  max-width: 1440px;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.side_logoo {
+  width: auto;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #004c5d 0%, #ff715b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+
+.navbar {
+  width: 100%;
+  display: flex;
+  padding: 15px 0;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar_hidden {
+  transform: translateY(-100%);
+}
+
+.navbar_visible {
+  transform: translateY(0);
+}
+
+.nav_item_set {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35px;
+  width: 100%;
+}
+
+.nav_bar_item {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding-right: 20px;
+}
+
+.nav_item_icon {
+  font-size: 24px;
+  color: #004c5d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav_item_icon_noty {
+  font-size: 24px;
+  color: #ff715b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav_nav_item {
+  font-size: 15px;
+  color: #004c5d;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 600;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.nav_nav_item_active {
+  color: #ff715b !important;
+  background: rgba(255, 113, 91, 0.1);
+  font-weight: 700;
+}
+
+.nav_item_icon:hover {
+  color: #ff715b;
+  transform: scale(1.1);
+}
+
+.nav_nav_item:hover {
+  color: #ff715b;
+  background: rgba(255, 113, 91, 0.1);
+}
+
+/* Remove the existing underline effects as we're using background highlight instead */
+.nav_nav_item::after,
+.nav_nav_item_active::before {
+  display: none;
+}
