@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AchievementsController {
     @Autowired
     private AchievementsRepository achievementsRepository;
-    private final Path root = Paths.get("uploads/achievementsPost");
+    private final Path root = Paths.get("uploads/progressUpdate");
     //Insert
     @PostMapping("/achievements")
     public AchievementsModel newAchievementsModel(@RequestBody AchievementsModel newAchievementsModel) {

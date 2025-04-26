@@ -19,6 +19,7 @@ import MyAchievements from "./Pages/AchievementsManagement/MyAchievements";
 import MyAllPost from "./Pages/PostManagement/MyAllPost";
 import GoogalUserPro from "./Pages/UserManagement/GoogalUserPro";
 import MyLearningPlan from "./Pages/LearningPlan/MyLearningPlan";
+import AllCourses from "./Pages/CourseManagement/AllCourses";
 
 function ProtectedRoute({ children }) {
   const userID = localStorage.getItem("userID");
@@ -58,6 +59,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/" element={<UserLogin />} />
           <Route path="/register" element={<UserRegister />} />
+          <Route path="/allCourses" element={<AllCourses />} />
 
           {/* Protected Routes */}
           <Route
