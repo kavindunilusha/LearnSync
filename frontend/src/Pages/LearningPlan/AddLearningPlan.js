@@ -312,10 +312,10 @@ function AddLearningPlan() {
                   required
                 >
                   <option value="" disabled>Select Category</option>
-                  <option value="Graphic Design">Graphic Design</option>
+                  <option value="AI and Data Science">AI and Data Science</option>
                   <option value="Web Development">Web Development</option>
                   <option value="Social Media">Social Media</option>
-                  <option value="Mastering Time Management">Mastering Time Management</option>
+                  <option value="Graphic Design">Graphic Design</option>
                   <option value="Creative Writing for Beginners">Creative Writing for Beginners</option>
                 </select>
               </div>
