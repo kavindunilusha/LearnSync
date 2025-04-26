@@ -334,7 +334,7 @@ function UpdateLearningPost() {
                   <option value="Web Development">Web Development</option>
                   <option value="Social Media">Social Media</option>
                   <option value="Graphic Design">Graphic Design</option>
-                  <option value="Creative Writing for Beginners">Other creative</option>
+                  <option value="Creative Writing for Beginners">Creative Writing for Beginners</option>
                 </select>
               </div>
               <button type="submit" className="Auth_button">Submit</button>
