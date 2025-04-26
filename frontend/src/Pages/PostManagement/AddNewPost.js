@@ -131,8 +131,8 @@ function AddNewPost() {
                 <option value="AI and Data Science">AI and Data Science</option>
                 <option value="Web Development">Web Development</option>
                 <option value="Social Media">Social Media</option>
-                <option value="Crochet">Crochet</option>
-                <option value="Other creative">Other creative</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="Other creative">Creative Writing for Beginners</option>
               </select>
             </div>
 
