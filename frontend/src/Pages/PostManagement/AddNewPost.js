@@ -129,7 +129,7 @@ function AddNewPost() {
               >
                 <option value="" disabled>Select Category</option>
                 <option value="AI and Data Science">AI and Data Science</option>
-                <option value="Painting">Painting</option>
+                <option value="Web Development">Web Development</option>
                 <option value="Jewelry making">Jewelry making</option>
                 <option value="Crochet">Crochet</option>
                 <option value="Other creative">Other creative</option>
