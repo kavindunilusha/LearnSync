@@ -333,7 +333,7 @@ function UpdateLearningPost() {
                   <option value="AI and Data Science">AI and Data Science</option>
                   <option value="Web Development">Web Development</option>
                   <option value="Social Media">Social Media</option>
-                  <option value="Crochet">Crochet</option>
+                  <option value="Graphic Design">Crochet</option>
                   <option value="Other creative">Other creative</option>
                 </select>
               </div>
