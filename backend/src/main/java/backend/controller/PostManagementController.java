@@ -225,6 +225,7 @@ public class PostManagementController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    //create comment on post
     @PostMapping("/{postId}/comment")
     public ResponseEntity<PostManagementModel> addComment(@PathVariable String postId, @RequestBody Map<String, String> request) {
         String userID = request.get("userID");
@@ -259,6 +260,7 @@ public class PostManagementController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    //update comment on post
     @PutMapping("/{postId}/comment/{commentId}")
     public ResponseEntity<PostManagementModel> updateComment(
             @PathVariable String postId,
@@ -279,6 +281,7 @@ public class PostManagementController {
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
+    //delete comment on post
     @DeleteMapping("/{postId}/comment/{commentId}")
     public ResponseEntity<PostManagementModel> deleteComment(
             @PathVariable String postId,
