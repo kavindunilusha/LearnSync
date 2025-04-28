@@ -218,6 +218,7 @@ public class UserController {
         return userRepository.existsByEmail(email);
     }
 
+    //follow
     @PutMapping("/user/{userID}/follow")
     public ResponseEntity<?> followUser(@PathVariable String userID, @RequestBody Map<String, String> request) {
         String followUserID = request.get("followUserID");
@@ -238,6 +239,7 @@ public class UserController {
         }).orElseThrow(() -> new UserNotFoundException("User not found: " + userID));
     }
 
+    //unfollow
     @PutMapping("/user/{userID}/unfollow")
     public ResponseEntity<?> unfollowUser(@PathVariable String userID, @RequestBody Map<String, String> request) {
         String unfollowUserID = request.get("unfollowUserID");
@@ -248,6 +250,7 @@ public class UserController {
         }).orElseThrow(() -> new UserNotFoundException("User not found: " + userID));
     }
 
+    // Get followed users
     @GetMapping("/user/{userID}/followedUsers")
     public List<String> getFollowedUsers(@PathVariable String userID) {
         return userRepository.findById(userID)
