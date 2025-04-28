@@ -316,7 +316,7 @@ function AddLearningPlan() {
                   <option value="Web Development">Web Development</option>
                   <option value="Social Media">Social Media</option>
                   <option value="Graphic Design">Graphic Design</option>
-                  <option value="Creative Writing for Beginners">Creative Writing for Beginners</option>
+                  <option value="Creative Writing for Beginner">Creative Writing for Beginner</option>
                 </select>
               </div>
 
