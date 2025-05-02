@@ -55,7 +55,7 @@ public class UserController {
 
     private static final String PROFILE_UPLOAD_DIR = "uploads/profile"; // Relative path
 
-    //Insert
+    //Insert User
     @PostMapping("/user")
     public ResponseEntity<?> newUserModel(@RequestBody UserModel newUserModel) {
         if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
@@ -97,7 +97,7 @@ public class UserController {
         }
     }
 
-    //Display
+    //Display 
     @GetMapping("/user")
     List<UserModel> getAllUsers() {
         return userRepository.findAll();
@@ -109,7 +109,7 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    //update
+    //update profile
     @PutMapping("/user/{id}")
     UserModel updateProfile(@RequestBody UserModel newUserModel, @PathVariable String id) {
         return userRepository.findById(id)
@@ -184,7 +184,7 @@ public class UserController {
         }
     }
 
-    //delete
+    //delete profile
     @DeleteMapping("/user/{id}")
     public ResponseEntity<?> deleteProfile(@PathVariable String id) {
         if (!userRepository.existsById(id)) {
@@ -218,7 +218,7 @@ public class UserController {
         return userRepository.existsByEmail(email);
     }
 
-    //follow
+    //follow user
     @PutMapping("/user/{userID}/follow")
     public ResponseEntity<?> followUser(@PathVariable String userID, @RequestBody Map<String, String> request) {
         String followUserID = request.get("followUserID");
@@ -239,7 +239,7 @@ public class UserController {
         }).orElseThrow(() -> new UserNotFoundException("User not found: " + userID));
     }
 
-    //unfollow
+    //unfollow user
     @PutMapping("/user/{userID}/unfollow")
     public ResponseEntity<?> unfollowUser(@PathVariable String userID, @RequestBody Map<String, String> request) {
         String unfollowUserID = request.get("unfollowUserID");
