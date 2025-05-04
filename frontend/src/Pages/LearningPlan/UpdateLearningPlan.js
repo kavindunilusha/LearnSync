@@ -332,6 +332,7 @@ function UpdateLearningPost() {
                   <option value="" disabled>Select Category</option>
                   <option value="AI and Data Science">AI and Data Science</option>
                   <option value="Web Development">Web Development</option>
+                  <option value="Backend Development">Backend Development</option>
                   <option value="DevOps">DevOps</option>
                   <option value="Social Media">Social Media</option>
                   <option value="Graphic Design">Graphic Design</option>
