@@ -335,6 +335,7 @@ function UpdateLearningPost() {
                   <option value="Backend Development">Backend Development</option>
                   <option value="DevOps">DevOps</option>
                   <option value="Social Media">Social Media</option>
+                  <option value="Photograpya and Video Editing">Photograpya and Video Editing</option>
                   <option value="Graphic Design">Graphic Design</option>
                   <option value="Creative Writing for Beginner">Creative Writing for Beginners</option>
                 </select>
