@@ -29,7 +29,7 @@ public class Post {
 	private List<String> images = new ArrayList<>();
 //	private String image;
 	private String video;
-	private String title;
+	//private String title;
 	
 	@ManyToOne//one user have multiple posts
 	private User user;
