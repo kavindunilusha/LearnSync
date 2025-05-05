@@ -68,7 +68,7 @@ function NavBar() {
             <div className="nav_con">
                 <div className='nav_item_set'>
                     <div className='side_logoo'>
-                        SkillBridge
+                        LearnSync
                     </div>
                     <div className='nav_bar_item'>
                         <p
