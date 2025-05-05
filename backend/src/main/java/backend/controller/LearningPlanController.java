@@ -123,7 +123,7 @@ public class LearningPlanController {
                     return learningPlanRepository.save(learningPlanModel);
                 }).orElseThrow(() -> new LearningPlanNotFoundException(id));
     }
-
+    //Delete function
     @DeleteMapping("/learningPlan/{id}")
     public void delete(@PathVariable String id) {
         learningPlanRepository.deleteById(id);
