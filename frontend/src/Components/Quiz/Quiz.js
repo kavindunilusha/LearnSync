@@ -92,7 +92,7 @@ const Quiz = ({ isOpen, onClose }) => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      calculateScore(); // Calculate score when quiz is complete
+      calculateScore(); // Calculate score when quiz is completed
     }
   };
 
