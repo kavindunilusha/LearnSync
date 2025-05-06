@@ -85,6 +85,7 @@ public class UserController {
 
 
 
+    // Uncomment the following code and comment the above to fix the email verification issue:
 
     //Replace the above code with the following to fix the email verification issue:
     // @PostMapping("/user")
@@ -137,7 +138,7 @@ public class UserController {
     // Temporary storage for unverified users (for demonstration purposes)
     // private final Map<String, UserModel> temporaryUserStorage = new HashMap<>();
 
-    
+
 
     // New endpoint to verify OTP and complete registration
     // @PostMapping("/verifyOtp")
