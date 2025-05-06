@@ -84,7 +84,7 @@ public class PostManagementController {
                     }
                 })
                 .collect(Collectors.toList());
-
+        //Save Post
         PostManagementModel post = new PostManagementModel();
         post.setUserID(userID);
         post.setTitle(title);
@@ -95,7 +95,7 @@ public class PostManagementController {
         PostManagementModel savedPost = postRepository.save(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
-
+    //Get all posts
     @GetMapping
     public List<PostManagementModel> getAllPosts() {
         return postRepository.findAll();
