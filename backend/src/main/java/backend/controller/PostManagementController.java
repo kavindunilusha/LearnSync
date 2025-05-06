@@ -67,6 +67,7 @@ public class PostManagementController {
             }
         }
 
+        // Process and save uploaded files
         List<String> mediaUrls = mediaFiles.stream()
                 .filter(file -> file.getContentType().matches("image/(jpeg|png|jpg)|video/mp4"))
                 .map(file -> {
