@@ -61,18 +61,22 @@ public class UserController {
         if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
             newUserModel.getPassword() == null || newUserModel.getBio() == null || // Validate bio
             newUserModel.getSkills() == null) { // Validate skills
+            System.out.println("Missing required fields in registration.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Missing required fields."));
         }
 
         if (userRepository.existsByEmail(newUserModel.getEmail())) {
+            System.out.println("Registration failed: Email already exists.");
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
         }
         
         //issue: account is added to database before email is verified
         try {
             UserModel savedUser = userRepository.save(newUserModel);
+            System.out.println("User registered successfully: " + savedUser.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (Exception e) {
+            System.out.println("Error saving user: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user."));
         }
     }
@@ -101,11 +105,13 @@ public class UserController {
     //Display 
     @GetMapping("/user")
     List<UserModel> getAllUsers() {
+        System.out.println("Fetching all users");
         return userRepository.findAll();
     }
 
     @GetMapping("/user/{id}")
     UserModel getUserId(@PathVariable String id) {
+        System.out.println("Fetching user with ID: " + id);
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
@@ -113,6 +119,7 @@ public class UserController {
     //update profile
     @PutMapping("/user/{id}")
     UserModel updateProfile(@RequestBody UserModel newUserModel, @PathVariable String id) {
+        System.out.println("Updating profile for user ID: " + id);
         return userRepository.findById(id)
                 .map(userModel -> {
                     userModel.setFullname(newUserModel.getFullname());
@@ -125,6 +132,7 @@ public class UserController {
                     
                     // Update postOwnerName in all related posts
                     List<LearningPlanModel> userPosts = learningPlanRepository.findByPostOwnerID(id);
+                    System.out.println("Updating fullname in " + userPosts.size() + " user posts.");
                     userPosts.forEach(post -> {
                         post.setPostOwnerName(newUserModel.getFullname());
                         learningPlanRepository.save(post);
