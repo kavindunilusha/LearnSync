@@ -36,6 +36,7 @@ public class PostManagementModel {
 
     }
 
+    //Getters and Setters
     public String getId() {
         return id;
     }
