@@ -259,6 +259,7 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + userID));
     }
 
+    // email verification code issue persists. user added to database before email is verified
     @PostMapping("/sendVerificationCode")
     public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");
