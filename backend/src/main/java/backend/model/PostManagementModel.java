@@ -11,11 +11,11 @@ import java.util.ArrayList;
 @Document(collection = "posts")
 public class PostManagementModel {
     @Id
-    private String id;
-    private String userID;
+    private String id; //Unique identifier for the post
+    private String userID;//ID of the user who created the post
     private String title;
-    private String description;
-    private List<String> media;
+    private String description;//Descrpton/content of the post
+    private List<String> media;//List of images and video
     private Map<String, Boolean> likes = new HashMap<>(); // Map to store user likes
     private List<Comment> comments = new ArrayList<>(); // List to store comments
     private String category; // New field for category
