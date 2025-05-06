@@ -29,7 +29,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/posts")// Base URL path for all post-related endpoints
 public class PostManagementController {
     @Autowired
     private PostManagementRepository postRepository;

@@ -19,7 +19,7 @@ public class PostManagementModel {
     private Map<String, Boolean> likes = new HashMap<>(); // Map to store user likes
     private List<Comment> comments = new ArrayList<>(); // List to store comments
     private String category; // New field for category
-    private List<String> tags;
+
 
     public PostManagementModel(String id, String userID, String title, String description, List<String> media) {
         this.id = id;
