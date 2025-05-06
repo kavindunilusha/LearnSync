@@ -132,6 +132,33 @@ function UserRegister() {
         }
     };
 
+
+
+
+    // Replace the above with the following code to handle the verification modal
+    // const handleVerifyCode = async () => {
+    //     try {
+    //         const response = await fetch('http://localhost:8080/verifyOtp', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ email: formData.email, otp: userEnteredCode }),
+    //         });
+    
+    //         if (response.ok) {
+    //             alert('Verification successful!');
+    //             setIsVerificationModalOpen(false); // Close the modal
+    //             window.location.href = '/'; // Redirect to the login page
+    //         } else {
+    //             const data = await response.json();
+    //             alert(data.message || 'Invalid verification code. Please try again.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error verifying OTP:', error);
+    //         alert('An error occurred while verifying the OTP. Please try again.');
+    //     }
+    // };
+
+
     return (
         <div className="register-container">
             <div className="register-background">
