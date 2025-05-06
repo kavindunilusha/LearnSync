@@ -37,7 +37,9 @@ function AddNewPost() {
         video.onloadedmetadata = () => {
           URL.revokeObjectURL(video.src);
           if (video.duration > 30) {
-            alert(`Video ${file.name} exceeds the maximum duration of 30 seconds.`);
+            alert(
+              `Video ${file.name} exceeds the maximum duration of 30 seconds.`
+            );
             window.location.reload();
           }
         };
@@ -73,9 +75,13 @@ function AddNewPost() {
     media.forEach((file, index) => formData.append(`mediaFiles`, file));
 
     try {
-      const response = await axios.post('http://localhost:8080/posts', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await axios.post(
+        'http://localhost:8080/posts',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
       alert('Post created successfully!');
       window.location.href = '/myAllPost';
     } catch (error) {
@@ -127,12 +133,16 @@ function AddNewPost() {
                 onChange={(e) => setCategories(e.target.value)}
                 required
               >
-                <option value="" disabled>Select Category</option>
+                <option value="" disabled>
+                  Select Category
+                </option>
                 <option value="AI and Data Science">AI and Data Science</option>
-                <option value="Web Development">Web Development</option>
+                <option value="Web Framework">Web Framework</option>
                 <option value="Social Media">Social Media</option>
                 <option value="Graphic Design">Graphic Design</option>
-                <option value="Other creative">Creative Writing for Beginners</option>
+                <option value="Other creative">
+                  Creative Writing for Beginners
+                </option>
               </select>
             </div>
 
@@ -148,7 +158,7 @@ function AddNewPost() {
                   onChange={handleMediaChange}
                 />
               </div>
-              
+
               <div className="media-preview">
                 {mediaPreviews.map((preview, index) => (
                   <div key={index} className="media-item">
