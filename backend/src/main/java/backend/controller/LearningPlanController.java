@@ -37,7 +37,7 @@ public class LearningPlanController {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    //Insert
+    //Insert function
     @PostMapping("/learningPlan")
     public LearningPlanModel newLearningSystemModel(@RequestBody LearningPlanModel newLearningPlanModel) {
         System.out.println("Received data: " + newLearningPlanModel); // Debugging line
@@ -123,7 +123,7 @@ public class LearningPlanController {
                     return learningPlanRepository.save(learningPlanModel);
                 }).orElseThrow(() -> new LearningPlanNotFoundException(id));
     }
-
+    //Delete function
     @DeleteMapping("/learningPlan/{id}")
     public void delete(@PathVariable String id) {
         learningPlanRepository.deleteById(id);
@@ -154,7 +154,7 @@ public class LearningPlanController {
                     LocalDateTime threeDaysBefore = endDate.minusDays(3);
 
                     if (threeDaysBefore.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")).equals(currentDate)) {
-                        // Check if a notification already exists for this plan and user
+                        // Check if  notification already exists for this plan and user
                         boolean notificationExists = notificationRepository.findByUserId(plan.getPostOwnerID())
                                 .stream()
                                 .anyMatch(notification -> notification.getMessage().contains(plan.getTitle()));

@@ -1,8 +1,25 @@
 .profile-page {
   min-height: 100vh;
-  background: #090909;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   padding: 80px 20px 20px 20px;
-  color: white;
+  color: #000000;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Profile image placeholder */
+.profile-image-placeholder {
+  width: 300px;
+  height: 300px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(45deg, #2acf8e, #4e95ed);
+  color: #000000;
+  font-size: 80px;
+  font-weight: 700;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .profile-content {
@@ -10,15 +27,52 @@
   margin: 0 auto;
 }
 
-.profile-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Add loading state */
+.loading-state {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #2acf8e;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loading-state p {
+  color: #000000;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profile-card {
+  background: #ffffff;
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 35px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  gap: 40px;
   margin-bottom: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .profile-image {
@@ -26,135 +80,307 @@
   height: 300px;
   border-radius: 20px;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
 .pro_left_card {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .user_data_card {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 .user_data_card_new {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 20px;
-  margin-bottom: 20px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 25px;
+  margin-bottom: 25px;
 }
 
 .username_card {
-  font-size: 36px;
-  font-weight: 600;
-  background: linear-gradient(45deg, #fff, #e0e0e0);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 10px;
+  font-size: 42px;
+  font-weight: 700;
+.username_card {
+  font-size: 42px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+  letter-spacing: 1px;
 }
 
 .user_data_card_item_bio {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-  line-height: 1.6;
+  color: #000000;
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 .user_data_card_item {
   display: flex;
   align-items: center;
   gap: 15px;
-  color: rgba(255, 255, 255, 0.9);
+  color: #000000;
   font-size: 16px;
+  font-weight: 500;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.user_data_card_item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(5px);
 }
 
 .user_data_card_icon {
-  color: #6b46c1;
-  font-size: 20px;
+  color: #2acf8e;
+  font-size: 22px;
 }
 
 .profile-actions {
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
+  gap: 20px;
+  margin-top: 35px;
 }
 
 .update-button, .delete-button {
-  padding: 12px 25px;
-  border-radius: 12px;
+  padding: 14px 28px;
+  border-radius: 50px;
   font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .update-button {
-  background: linear-gradient(45deg, #6b46c1, #805ad5);
-  color: white;
+  background: linear-gradient(45deg, #64E8DE, #8A64EB);
+  color: #000000;
+  flex: 2;
+  font-weight: 600;
 }
 
 .delete-button {
-  background: rgba(255, 59, 48, 0.1);
-  color: #ff3b30;
+  background: rgba(255, 59, 48, 0.12);
+  color: #000000;
   border: 1px solid rgba(255, 59, 48, 0.2);
+  flex: 1;
+  font-weight: 600;
 }
 
-.update-button:hover, .delete-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+.update-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(138, 100, 235, 0.4);
+}
+
+.delete-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 59, 48, 0.25);
+  background: rgba(255, 59, 48, 0.18);
 }
 
 .my_post_link {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
-  margin-top: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
 }
 
 .my_post_link_card {
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff;
   backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 20px;
+  border-radius: 20px;
+  padding: 30px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.my_post_link_card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.my_post_link_card:hover::before {
+  opacity: 1;
 }
 
 .my_post_link_card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .my_post_name_img1,
 .my_post_name_img2,
 .my_post_name_img3 {
-  width: 80px;
-  height: 80px;
-  border-radius: 15px;
+  width: 90px;
+  height: 90px;
+  border-radius: 18px;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.my_post_name_img1 {
+  background-color: #64E8DE;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>');
+}
+
+.my_post_name_img2 {
+  background-color: #8A64EB;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>');
+}
+
+.my_post_name_img3 {
+  background-color: #FF6B6B;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>');
+}
+
+.my_post_link_card:hover .my_post_name_img1,
+.my_post_link_card:hover .my_post_name_img2,
+.my_post_link_card:hover .my_post_name_img3 {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .my_post_link_card_name {
-  color: white;
-  font-size: 18px;
-  font-weight: 500;
+  color: #000000;
+  font-size: 20px;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.my_post_link_card:hover .my_post_link_card_name {
+  transform: translateX(5px);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Skills tags styling */
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.skill-tag {
+  background: rgba(42, 207, 142, 0.15);
+  color: #000000;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(42, 207, 142, 0.3);
+}
+
+.skill-tag:hover {
+  background: rgba(42, 207, 142, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-card, .my_post_link_card {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.my_post_link_card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.my_post_link_card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@media (max-width: 992px) {
+  .profile-card {
+    flex-direction: column;
+  }
+  
+  .profile-image {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto;
+  }
+  
+  .username_card {
+    font-size: 32px;
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
   .profile-card {
-    flex-direction: column;
-    align-items: center;
+    padding: 25px;
   }
-
+  
   .profile-image {
     width: 200px;
     height: 200px;
+  }
+  
+  .profile-actions {
+    flex-direction: column;
+  }
+  
+  .username_card {
+    font-size: 28px;
+  }
+  
+  .my_post_link_card {
+    padding: 20px;
+  }
+  
+  .my_post_name_img1,
+  .my_post_name_img2,
+  .my_post_name_img3 {
+    width: 70px;
+    height: 70px;
   }
 }

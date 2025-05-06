@@ -68,14 +68,20 @@ function NavBar() {
             <div className="nav_con">
                 <div className='nav_item_set'>
                     <div className='side_logoo'>
-                        SkillBridge
+                        LearnSync
                     </div>
                     <div className='nav_bar_item'>
+                        <p
+                            className={`nav_nav_item ${currentPath === '/allCourses' ? 'nav_nav_item_active' : ''}`}
+                            onClick={() => (window.location.href = '/allCourses')}
+                        >
+                            Courses
+                        </p>
                         <p
                             className={`nav_nav_item ${currentPath === '/allPost' ? 'nav_nav_item_active' : ''}`}
                             onClick={() => (window.location.href = '/allPost')}
                         >
-                            SKILL
+                            SKILLS
                         </p>
                         <p
                             className={`nav_nav_item ${currentPath === '/allLearningPlan' ? 'nav_nav_item_active' : ''}`}

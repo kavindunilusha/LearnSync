@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .cors().and() // Enable CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
+                        /*.requestMatchers(
                                 "/login/**",
                                 "/oauth2/**",
                                 "/user/**",
@@ -29,9 +29,11 @@ public class SecurityConfig {
                                 "/uploads/profile/**",
                                 "/learningPlan/**",
                                 "/achievements/**",
-                                "/notifications/**"
+                                "/notifications/**",
+                                "/courses/**"
                         ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated()*/
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .defaultSuccessUrl("/oauth2/success", true)
@@ -49,4 +51,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
 }
