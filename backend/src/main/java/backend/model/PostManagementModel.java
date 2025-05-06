@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 
+/**
+ * Repreents a post in the system with features lke title, descrption,meda attachments and category classfication
+ */
 @Document(collection = "posts")
 public class PostManagementModel {
     @Id
