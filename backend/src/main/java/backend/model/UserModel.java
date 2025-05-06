@@ -22,6 +22,11 @@ public class UserModel {
     private Set<String> skills = new HashSet<>(); // Added skills field
     private String bio; // Added bio field
 
+    // New field for email verification status
+    // To fix the email verification issue.
+    // private boolean verified = false; // Default to false
+    // private String otp;
+
     public UserModel() {}
 
     public UserModel(String id, String fullname, String email, String password, String phone, String profilePicturePath, String googleProfileImage) {
@@ -113,4 +118,22 @@ public class UserModel {
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+    // New getter and setter for verified field.
+    // To fix the email verification issue.
+    // public boolean isVerified() {
+    //     return verified;
+    // }
+    
+    // public void setVerified(boolean verified) {
+    //     this.verified = verified;
+    // }
+
+    // public String getOtp() {
+    //     return otp;
+    // }
+    
+    // public void setOtp(String otp) {
+    //     this.otp = otp;
+    // }
 }

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -80,6 +81,94 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user."));
         }
     }
+
+
+
+
+
+    //Replace the above code with the following to fix the email verification issue:
+    // @PostMapping("/user")
+    // public ResponseEntity<?> newUserModel(@RequestBody UserModel newUserModel) {
+    //     if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
+    //         newUserModel.getPassword() == null || newUserModel.getBio() == null || 
+    //         newUserModel.getSkills() == null) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Missing required fields."));
+    //     }
+
+    //     if (userRepository.existsByEmail(newUserModel.getEmail())) {
+    //         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
+    //     }
+
+    //     // Generate OTP
+    //     String otp = generateOtp();
+    //     newUserModel.setOtp(otp);
+    //     newUserModel.setVerified(false); // Mark user as unverified
+
+    //     // Send OTP to user's email
+    //     try {
+    //         sendOtpEmail(newUserModel.getEmail(), otp);
+    //         // Temporarily store user details in memory (or a cache, if needed)
+    //         temporaryUserStorage.put(newUserModel.getEmail(), newUserModel);
+
+    //         return ResponseEntity.ok(Map.of("message", "OTP sent to your email. Please verify to complete registration."));
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to send OTP."));
+    //     }
+    // }
+
+    // // Utility method to generate OTP
+    // private String generateOtp() {
+    //     Random random = new Random();
+    //     int otp = 100000 + random.nextInt(900000); // Generate a 6-digit OTP
+    //     return String.valueOf(otp);
+    // }
+
+    // // Utility method to send OTP email
+    // private void sendOtpEmail(String email, String otp) {
+    //     SimpleMailMessage message = new SimpleMailMessage();
+    //     message.setTo(email);
+    //     message.setSubject("Your OTP for Email Verification");
+    //     message.setText("Your OTP is: " + otp);
+    //     mailSender.send(message);
+    // }
+
+
+
+    // Temporary storage for unverified users (for demonstration purposes)
+    // private final Map<String, UserModel> temporaryUserStorage = new HashMap<>();
+
+    
+
+    // New endpoint to verify OTP and complete registration
+    // @PostMapping("/verifyOtp")
+    // public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
+    //     String email = request.get("email");
+    //     String otp = request.get("otp");
+
+    //     if (email == null || otp == null) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and OTP are required."));
+    //     }
+
+    //     UserModel user = temporaryUserStorage.get(email);
+    //     if (user == null) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
+    //     }
+
+    //     if (user.getOtp().equals(otp)) {
+    //         user.setVerified(true); // Mark user as verified
+    //         user.setOtp(null); // Clear OTP
+    //         userRepository.save(user); // Save user to the database
+    //         temporaryUserStorage.remove(email); // Remove from temporary storage
+
+    //         return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
+    //     } else {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP."));
+    //     }
+    // }
+
+
+
+    
 
     //User Login
     @PostMapping("/login")
