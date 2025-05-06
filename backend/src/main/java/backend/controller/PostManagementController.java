@@ -101,6 +101,7 @@ public class PostManagementController {
         return postRepository.findAll();
     }
 
+    //get posts by user
     @GetMapping("/user/{userID}")
     public List<PostManagementModel> getPostsByUser(@PathVariable String userID) {
         return postRepository.findAll().stream()
@@ -108,6 +109,7 @@ public class PostManagementController {
                 .collect(Collectors.toList());
     }
 
+    //get post by id
     @GetMapping("/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable String postId) {
         PostManagementModel post = postRepository.findById(postId)
@@ -115,6 +117,7 @@ public class PostManagementController {
         return ResponseEntity.ok(post);
     }
 
+    //delete post
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable String postId) {
         PostManagementModel post = postRepository.findById(postId)
@@ -137,6 +140,7 @@ public class PostManagementController {
         return ResponseEntity.ok("Post deleted successfully!");
     }
 
+    //update post
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(
             @PathVariable String postId,
