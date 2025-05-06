@@ -51,6 +51,7 @@ public class PostManagementController {
             @RequestParam String category, // New parameter for category
             @RequestParam List<MultipartFile> mediaFiles) {
 
+        // Validate number of uploaded files
         if (mediaFiles.size() < 1 || mediaFiles.size() > 3) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must upload between 1 and 3 media files.");
         }
