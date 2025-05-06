@@ -61,17 +61,22 @@ public class UserController {
         if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
             newUserModel.getPassword() == null || newUserModel.getBio() == null || // Validate bio
             newUserModel.getSkills() == null) { // Validate skills
+            System.out.println("Missing required fields in registration."); // Log the error
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Missing required fields."));
         }
 
         if (userRepository.existsByEmail(newUserModel.getEmail())) {
+            System.out.println("Registration failed: Email already exists."); // Log the error
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
         }
-
+        
+        //issue: account is added to database before email is verified
         try {
             UserModel savedUser = userRepository.save(newUserModel);
+            System.out.println("User registered successfully: " + savedUser.getId()); // Log success
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (Exception e) {
+            System.out.println("Error saving user: " + e.getMessage()); // Log the error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user."));
         }
     }
@@ -100,11 +105,14 @@ public class UserController {
     //Display 
     @GetMapping("/user")
     List<UserModel> getAllUsers() {
+        System.out.println("Fetching all users"); // Log fetching all users
+        // Fetch all users from the repository
         return userRepository.findAll();
     }
 
     @GetMapping("/user/{id}")
     UserModel getUserId(@PathVariable String id) {
+        System.out.println("Fetching user with ID: " + id); // Log fetching user by ID
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
@@ -112,6 +120,7 @@ public class UserController {
     //update profile
     @PutMapping("/user/{id}")
     UserModel updateProfile(@RequestBody UserModel newUserModel, @PathVariable String id) {
+        System.out.println("Updating profile for user ID: " + id); // Log updating profile
         return userRepository.findById(id)
                 .map(userModel -> {
                     userModel.setFullname(newUserModel.getFullname());
@@ -124,6 +133,7 @@ public class UserController {
                     
                     // Update postOwnerName in all related posts
                     List<LearningPlanModel> userPosts = learningPlanRepository.findByPostOwnerID(id);
+                    System.out.println("Updating fullname in " + userPosts.size() + " user posts."); // Log the number of posts updated
                     userPosts.forEach(post -> {
                         post.setPostOwnerName(newUserModel.getFullname());
                         learningPlanRepository.save(post);
@@ -258,6 +268,7 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + userID));
     }
 
+    // email verification code issue persists. user added to database before email is verified
     @PostMapping("/sendVerificationCode")
     public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");
