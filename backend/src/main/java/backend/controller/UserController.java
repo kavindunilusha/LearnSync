@@ -67,7 +67,8 @@ public class UserController {
         if (userRepository.existsByEmail(newUserModel.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
         }
-
+        
+        //issue: account is added to database before email is verified
         try {
             UserModel savedUser = userRepository.save(newUserModel);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
