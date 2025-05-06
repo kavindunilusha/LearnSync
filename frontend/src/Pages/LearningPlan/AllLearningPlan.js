@@ -70,7 +70,7 @@ function AllLearningPlan() {
     const validCategories = ['Graphic Design', 'Web Development', 'Social Media', 'Mastering Time Management', 'Creative Writing for Beginners'];
     
     if (validCategories.includes(query)) {
-      // Filter exactly matching category
+      // Filter exactly matching category only
       setFilteredPosts(
         posts.filter(post => 
           post.category && post.category.toLowerCase() === query
