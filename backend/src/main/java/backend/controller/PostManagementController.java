@@ -29,7 +29,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/posts")// Base URL path for all post-related endpoints
 public class PostManagementController {
     @Autowired
     private PostManagementRepository postRepository;
@@ -51,6 +51,7 @@ public class PostManagementController {
             @RequestParam String category, // New parameter for category
             @RequestParam List<MultipartFile> mediaFiles) {
 
+        // Validate number of uploaded files
         if (mediaFiles.size() < 1 || mediaFiles.size() > 3) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must upload between 1 and 3 media files.");
         }
@@ -66,6 +67,7 @@ public class PostManagementController {
             }
         }
 
+        // Process and save uploaded files
         List<String> mediaUrls = mediaFiles.stream()
                 .filter(file -> file.getContentType().matches("image/(jpeg|png|jpg)|video/mp4"))
                 .map(file -> {
@@ -82,7 +84,7 @@ public class PostManagementController {
                     }
                 })
                 .collect(Collectors.toList());
-
+        //Save Post
         PostManagementModel post = new PostManagementModel();
         post.setUserID(userID);
         post.setTitle(title);
@@ -93,12 +95,13 @@ public class PostManagementController {
         PostManagementModel savedPost = postRepository.save(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
-
+    //Get all posts
     @GetMapping
     public List<PostManagementModel> getAllPosts() {
         return postRepository.findAll();
     }
 
+    //get posts by user
     @GetMapping("/user/{userID}")
     public List<PostManagementModel> getPostsByUser(@PathVariable String userID) {
         return postRepository.findAll().stream()
@@ -106,6 +109,7 @@ public class PostManagementController {
                 .collect(Collectors.toList());
     }
 
+    //get post by id
     @GetMapping("/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable String postId) {
         PostManagementModel post = postRepository.findById(postId)
@@ -113,6 +117,7 @@ public class PostManagementController {
         return ResponseEntity.ok(post);
     }
 
+    //delete post
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable String postId) {
         PostManagementModel post = postRepository.findById(postId)
@@ -135,6 +140,7 @@ public class PostManagementController {
         return ResponseEntity.ok("Post deleted successfully!");
     }
 
+    //update post
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(
             @PathVariable String postId,
