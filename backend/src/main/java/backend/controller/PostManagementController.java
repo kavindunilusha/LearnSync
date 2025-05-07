@@ -219,6 +219,7 @@ public class PostManagementController {
         return ResponseEntity.ok("Media file deleted successfully!");
     }
 
+    //like post 
     @PutMapping("/{postId}/like")
     public ResponseEntity<PostManagementModel> likePost(@PathVariable String postId, @RequestParam String userID) {
         return postRepository.findById(postId)
@@ -286,7 +287,7 @@ public class PostManagementController {
         String userID = request.get("userID");
         String content = request.get("content");
 
-        return postRepository.findById(postId)
+        return postRepository.findById(postId) //check if post exists and if the comment belongs to the user
                 .map(post -> {
                     post.getComments().stream()
                             .filter(comment -> comment.getId().equals(commentId) && comment.getUserID().equals(userID))
@@ -304,7 +305,7 @@ public class PostManagementController {
             @PathVariable String postId,
             @PathVariable String commentId,
             @RequestParam String userID) {
-        return postRepository.findById(postId)
+        return postRepository.findById(postId) //check if post exists and if the comment belongs to the user
                 .map(post -> {
                     post.getComments().removeIf(comment ->
                             comment.getId().equals(commentId) &&
