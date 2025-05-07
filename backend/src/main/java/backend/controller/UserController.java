@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -61,20 +62,114 @@ public class UserController {
         if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
             newUserModel.getPassword() == null || newUserModel.getBio() == null || // Validate bio
             newUserModel.getSkills() == null) { // Validate skills
+            System.out.println("Missing required fields in registration."); // Log the error
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Missing required fields."));
         }
 
         if (userRepository.existsByEmail(newUserModel.getEmail())) {
+            System.out.println("Registration failed: Email already exists."); // Log the error
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
         }
-
+        
+        //issue: account is added to database before email is verified
         try {
             UserModel savedUser = userRepository.save(newUserModel);
+            System.out.println("User registered successfully: " + savedUser.getId()); // Log success
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         } catch (Exception e) {
+            System.out.println("Error saving user: " + e.getMessage()); // Log the error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user."));
         }
     }
+
+
+
+
+    // Uncomment the following code and comment the above to fix the email verification issue:
+
+    //Replace the above code with the following to fix the email verification issue:
+    // @PostMapping("/user")
+    // public ResponseEntity<?> newUserModel(@RequestBody UserModel newUserModel) {
+    //     if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
+    //         newUserModel.getPassword() == null || newUserModel.getBio() == null || 
+    //         newUserModel.getSkills() == null) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Missing required fields."));
+    //     }
+
+    //     if (userRepository.existsByEmail(newUserModel.getEmail())) {
+    //         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
+    //     }
+
+    //     // Generate OTP
+    //     String otp = generateOtp();
+    //     newUserModel.setOtp(otp);
+    //     newUserModel.setVerified(false); // Mark user as unverified
+
+    //     // Send OTP to user's email
+    //     try {
+    //         sendOtpEmail(newUserModel.getEmail(), otp);
+    //         // Temporarily store user details in memory (or a cache, if needed)
+    //         temporaryUserStorage.put(newUserModel.getEmail(), newUserModel);
+
+    //         return ResponseEntity.ok(Map.of("message", "OTP sent to your email. Please verify to complete registration."));
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to send OTP."));
+    //     }
+    // }
+
+    // // Utility method to generate OTP
+    // private String generateOtp() {
+    //     Random random = new Random();
+    //     int otp = 100000 + random.nextInt(900000); // Generate a 6-digit OTP
+    //     return String.valueOf(otp);
+    // }
+
+    // // Utility method to send OTP email
+    // private void sendOtpEmail(String email, String otp) {
+    //     SimpleMailMessage message = new SimpleMailMessage();
+    //     message.setTo(email);
+    //     message.setSubject("Your OTP for Email Verification");
+    //     message.setText("Your OTP is: " + otp);
+    //     mailSender.send(message);
+    // }
+
+
+
+    // Temporary storage for unverified users (for demonstration purposes)
+    // private final Map<String, UserModel> temporaryUserStorage = new HashMap<>();
+
+
+
+    // New endpoint to verify OTP and complete registration
+    // @PostMapping("/verifyOtp")
+    // public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
+    //     String email = request.get("email");
+    //     String otp = request.get("otp");
+
+    //     if (email == null || otp == null) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and OTP are required."));
+    //     }
+
+    //     UserModel user = temporaryUserStorage.get(email);
+    //     if (user == null) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
+    //     }
+
+    //     if (user.getOtp().equals(otp)) {
+    //         user.setVerified(true); // Mark user as verified
+    //         user.setOtp(null); // Clear OTP
+    //         userRepository.save(user); // Save user to the database
+    //         temporaryUserStorage.remove(email); // Remove from temporary storage
+
+    //         return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
+    //     } else {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP."));
+    //     }
+    // }
+
+
+
+    
 
     //User Login
     @PostMapping("/login")
@@ -100,11 +195,14 @@ public class UserController {
     //Display 
     @GetMapping("/user")
     List<UserModel> getAllUsers() {
+        System.out.println("Fetching all users"); // Log fetching all users
+        // Fetch all users from the repository
         return userRepository.findAll();
     }
 
     @GetMapping("/user/{id}")
     UserModel getUserId(@PathVariable String id) {
+        System.out.println("Fetching user with ID: " + id); // Log fetching user by ID
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
@@ -112,6 +210,7 @@ public class UserController {
     //update profile
     @PutMapping("/user/{id}")
     UserModel updateProfile(@RequestBody UserModel newUserModel, @PathVariable String id) {
+        System.out.println("Updating profile for user ID: " + id); // Log updating profile
         return userRepository.findById(id)
                 .map(userModel -> {
                     userModel.setFullname(newUserModel.getFullname());
@@ -124,6 +223,7 @@ public class UserController {
                     
                     // Update postOwnerName in all related posts
                     List<LearningPlanModel> userPosts = learningPlanRepository.findByPostOwnerID(id);
+                    System.out.println("Updating fullname in " + userPosts.size() + " user posts."); // Log the number of posts updated
                     userPosts.forEach(post -> {
                         post.setPostOwnerName(newUserModel.getFullname());
                         learningPlanRepository.save(post);
@@ -258,6 +358,7 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException("User not found: " + userID));
     }
 
+    // email verification code issue persists. user added to database before email is verified
     @PostMapping("/sendVerificationCode")
     public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");

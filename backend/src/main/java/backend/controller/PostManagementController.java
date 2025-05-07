@@ -29,7 +29,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/posts")// Base URL path for all post-related endpoints
 public class PostManagementController {
     @Autowired
     private PostManagementRepository postRepository;
@@ -51,6 +51,7 @@ public class PostManagementController {
             @RequestParam String category, // New parameter for category
             @RequestParam List<MultipartFile> mediaFiles) {
 
+        // Validate number of uploaded files
         if (mediaFiles.size() < 1 || mediaFiles.size() > 3) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You must upload between 1 and 3 media files.");
         }
@@ -66,6 +67,7 @@ public class PostManagementController {
             }
         }
 
+        // Process and save uploaded files
         List<String> mediaUrls = mediaFiles.stream()
                 .filter(file -> file.getContentType().matches("image/(jpeg|png|jpg)|video/mp4"))
                 .map(file -> {
@@ -82,7 +84,7 @@ public class PostManagementController {
                     }
                 })
                 .collect(Collectors.toList());
-
+        //Save Post
         PostManagementModel post = new PostManagementModel();
         post.setUserID(userID);
         post.setTitle(title);
@@ -93,12 +95,13 @@ public class PostManagementController {
         PostManagementModel savedPost = postRepository.save(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
     }
-
+    //Get all posts
     @GetMapping
     public List<PostManagementModel> getAllPosts() {
         return postRepository.findAll();
     }
 
+    //get posts by user
     @GetMapping("/user/{userID}")
     public List<PostManagementModel> getPostsByUser(@PathVariable String userID) {
         return postRepository.findAll().stream()
@@ -106,6 +109,7 @@ public class PostManagementController {
                 .collect(Collectors.toList());
     }
 
+    //get post by id
     @GetMapping("/{postId}")
     public ResponseEntity<?> getPostById(@PathVariable String postId) {
         PostManagementModel post = postRepository.findById(postId)
@@ -113,6 +117,7 @@ public class PostManagementController {
         return ResponseEntity.ok(post);
     }
 
+    //delete post
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable String postId) {
         PostManagementModel post = postRepository.findById(postId)
@@ -135,6 +140,7 @@ public class PostManagementController {
         return ResponseEntity.ok("Post deleted successfully!");
     }
 
+    //update post
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(
             @PathVariable String postId,
@@ -180,24 +186,35 @@ public class PostManagementController {
         return ResponseEntity.ok("Post updated successfully!");
     }
 
+    //delete a media file from post
     @DeleteMapping("/{postId}/media")
     public ResponseEntity<?> deleteMedia(@PathVariable String postId, @RequestBody Map<String, String> request) {
+
+        // Extract the media URL from the request body
         String mediaUrl = request.get("mediaUrl");
 
+        // Look up the post by its ID; throw an exception if it doesn't exist
         PostManagementModel post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostManagementNotFoundException("Post not found: " + postId));
 
+        // Try to remove the media URL from the post's media list
+        // If the URL doesn't exist in the list, return 404 Not Found
         if (!post.getMedia().remove(mediaUrl)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Media file not found in post.");
         }
 
         try {
+            // Build the path to the physical file by removing the "/media/" prefix
             Path filePath = Paths.get(uploadDir, mediaUrl.replace("/media/", ""));
+
+            // Try to delete the file from the file system
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
+            // If file deletion fails due to I/O issues, return 500 Internal Server Error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete media file.");
         }
 
+        // Save the updated post (media list updated) back to the repository
         postRepository.save(post);
         return ResponseEntity.ok("Media file deleted successfully!");
     }
@@ -297,7 +314,7 @@ public class PostManagementController {
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
+    //handle max upload size exception
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<?> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File size exceeds the maximum limit!");
