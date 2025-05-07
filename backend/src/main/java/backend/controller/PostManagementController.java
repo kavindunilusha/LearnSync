@@ -186,24 +186,35 @@ public class PostManagementController {
         return ResponseEntity.ok("Post updated successfully!");
     }
 
+    //delete a media file from post
     @DeleteMapping("/{postId}/media")
     public ResponseEntity<?> deleteMedia(@PathVariable String postId, @RequestBody Map<String, String> request) {
+
+        // Extract the media URL from the request body
         String mediaUrl = request.get("mediaUrl");
 
+        // Look up the post by its ID; throw an exception if it doesn't exist
         PostManagementModel post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostManagementNotFoundException("Post not found: " + postId));
 
+        // Try to remove the media URL from the post's media list
+        // If the URL doesn't exist in the list, return 404 Not Found
         if (!post.getMedia().remove(mediaUrl)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Media file not found in post.");
         }
 
         try {
+            // Build the path to the physical file by removing the "/media/" prefix
             Path filePath = Paths.get(uploadDir, mediaUrl.replace("/media/", ""));
+
+            // Try to delete the file from the file system
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
+            // If file deletion fails due to I/O issues, return 500 Internal Server Error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete media file.");
         }
 
+        // Save the updated post (media list updated) back to the repository
         postRepository.save(post);
         return ResponseEntity.ok("Media file deleted successfully!");
     }
@@ -303,7 +314,7 @@ public class PostManagementController {
                 })
                 .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
-
+    //handle max upload size exception
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<?> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File size exceeds the maximum limit!");
