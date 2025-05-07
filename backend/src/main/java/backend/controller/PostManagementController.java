@@ -186,6 +186,7 @@ public class PostManagementController {
         return ResponseEntity.ok("Post updated successfully!");
     }
 
+    //delete a media file from post
     @DeleteMapping("/{postId}/media")
     public ResponseEntity<?> deleteMedia(@PathVariable String postId, @RequestBody Map<String, String> request) {
         String mediaUrl = request.get("mediaUrl");
