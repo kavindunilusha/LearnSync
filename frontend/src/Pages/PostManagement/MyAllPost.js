@@ -13,6 +13,8 @@ import { GrUpdate } from "react-icons/gr";
 import { FiSave } from "react-icons/fi";
 import { TbPencilCancel } from "react-icons/tb";
 import { FaCommentAlt } from "react-icons/fa";
+
+//set root element for accessibility
 Modal.setAppElement('#root');
 
 function MyAllPost() {
