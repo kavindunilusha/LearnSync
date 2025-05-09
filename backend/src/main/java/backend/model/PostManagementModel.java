@@ -14,7 +14,7 @@ public class PostManagementModel {
     private String id; //Unique identifier for the post
     private String userID;//ID of the user who created the post
     private String title;
-    private String description;//Descrpton/content of the post
+    private String description;//Descripton/content of the post
     private List<String> media;//List of images and video
     private Map<String, Boolean> likes = new HashMap<>(); // Map to store user likes
     private List<Comment> comments = new ArrayList<>(); // List to store comments
