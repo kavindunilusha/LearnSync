@@ -13,15 +13,17 @@ import { GrUpdate } from "react-icons/gr";
 import { FiSave } from "react-icons/fi";
 import { TbPencilCancel } from "react-icons/tb";
 import { FaCommentAlt } from "react-icons/fa";
+
+//set root element for accessibility
 Modal.setAppElement('#root');
 
 function MyAllPost() {
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [postOwners, setPostOwners] = useState({});
-  const [showMyPosts, setShowMyPosts] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [filteredPosts, setFilteredPosts] = useState([]);// Stores all fetched posts from the backend
+  const [postOwners, setPostOwners] = useState({});// Stores posts after applying filters
+  const [showMyPosts, setShowMyPosts] = useState(false);// mapp post IDs to user details
+  const [isModalOpen, setIsModalOpen] = useState(false);// Controls whether to show only the current user's posts
+  const [selectedMedia, setSelectedMedia] = useState(null);// Controls visibility of the media modal (e.g., image or video viewer)
   const [followedUsers, setFollowedUsers] = useState([]); // State to track followed users
   const [newComment, setNewComment] = useState({}); // State for new comments
   const [editingComment, setEditingComment] = useState({}); // State for editing comments
@@ -50,13 +52,14 @@ function MyAllPost() {
               userID,
               fullName: res.data.fullname,
             }))
+            // If fetching user details fails, log the error
             .catch((error) => {
               console.error(`Error fetching user details for userID ${userID}:`, error);
               return { userID, fullName: 'Anonymous' };
             })
         );
-        const owners = await Promise.all(ownerPromises);
-        const ownerMap = owners.reduce((acc, owner) => {
+        const owners = await Promise.all(ownerPromises);// Wait for all user detail fetch promises to resolve
+        const ownerMap = owners.reduce((acc, owner) => {// Convert the list of owners into a map of userID to fullName
           acc[owner.userID] = owner.fullName;
           return acc;
         }, {});
