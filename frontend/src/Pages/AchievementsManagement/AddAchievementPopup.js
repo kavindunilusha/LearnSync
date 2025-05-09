@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './AchievementsPopup.css';
 
-function AddAchievementPopup({ onClose, onSubmit }) {
+function AddAchievementPopup({ onClose, onSubmit, topicTitle }) {
+    console.log("AddAchievementPopup rendered with topicTitle:", topicTitle);
+    
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -14,19 +16,30 @@ function AddAchievementPopup({ onClose, onSubmit }) {
     const [imagePreview, setImagePreview] = useState(null);
 
     useEffect(() => {
+        console.log("AddAchievementPopup useEffect triggered with topicTitle:", topicTitle);
+        // Set default values when component mounts
+        const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+        setFormData(prev => ({
+            ...prev,
+            title: topicTitle,
+            description: "I am happy to share that I have completed this section",
+            date: today
+        }));
+
+        // Get user data
         const userId = localStorage.getItem('userID');
         if (userId) {
-            setFormData((prevData) => ({ ...prevData, postOwnerID: userId }));
+            setFormData(prev => ({ ...prev, postOwnerID: userId }));
             fetch(`http://localhost:8080/user/${userId}`)
                 .then((response) => response.json())
                 .then((data) => {
                     if (data && data.fullname) {
-                        setFormData((prevData) => ({ ...prevData, postOwnerName: data.fullname }));
+                        setFormData(prev => ({ ...prev, postOwnerName: data.fullname }));
                     }
                 })
                 .catch((error) => console.error('Error fetching user data:', error));
         }
-    }, []);
+    }, [topicTitle]); // Add topicTitle as a dependency
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
