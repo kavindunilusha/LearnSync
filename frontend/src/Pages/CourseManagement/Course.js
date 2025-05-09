@@ -11,6 +11,8 @@ function Course() {
     const [completedTopicIds, setCompletedTopicIds] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [completionPercentage, setCompletionPercentage] = useState(0);
+    const [showShareDialog, setShowShareDialog] = useState(false);
+    const [currentTopicId, setCurrentTopicId] = useState(null);
 
     useEffect(() => {
         fetch(`http://localhost:8080/courses/${courseId}`)
@@ -56,32 +58,44 @@ function Course() {
             return prev;
         });
 
-        // Then, collapse the current topic and expand the next incomplete one
-        if (course && course.topics) {
-            const currentIndex = course.topics.findIndex(topic => topic.id === currentTopicId);
-            
-            // Find the next incomplete topic
-            let nextIncompleteTopicId = null;
-            for (let i = currentIndex + 1; i < course.topics.length; i++) {
-                const topicId = course.topics[i].id;
-                if (!completedTopicIds.includes(topicId) && topicId !== currentTopicId) {
-                    nextIncompleteTopicId = topicId;
-                    break;
-                }
-            }
+        // Show the share dialog
+        setCurrentTopicId(currentTopicId);
+        setShowShareDialog(true);
+    };
 
-            // Update expanded topics
-            setExpandedTopicIds(prev => {
-                // Remove current topic
-                const withoutCurrent = prev.filter(id => id !== currentTopicId);
+    const handleShareDialogResponse = (shouldShare) => {
+        setShowShareDialog(false);
+        if (shouldShare) {
+            // Navigate to AddAchievements page
+            navigate('/addAchievements');
+        } else {
+            // Just collapse the current topic and expand the next one
+            if (course && course.topics) {
+                const currentIndex = course.topics.findIndex(topic => topic.id === currentTopicId);
                 
-                // Add next topic if found
-                if (nextIncompleteTopicId && !withoutCurrent.includes(nextIncompleteTopicId)) {
-                    return [...withoutCurrent, nextIncompleteTopicId];
+                // Find the next incomplete topic
+                let nextIncompleteTopicId = null;
+                for (let i = currentIndex + 1; i < course.topics.length; i++) {
+                    const topicId = course.topics[i].id;
+                    if (!completedTopicIds.includes(topicId) && topicId !== currentTopicId) {
+                        nextIncompleteTopicId = topicId;
+                        break;
+                    }
                 }
-                
-                return withoutCurrent;
-            });
+
+                // Update expanded topics
+                setExpandedTopicIds(prev => {
+                    // Remove current topic
+                    const withoutCurrent = prev.filter(id => id !== currentTopicId);
+                    
+                    // Add next topic if found
+                    if (nextIncompleteTopicId && !withoutCurrent.includes(nextIncompleteTopicId)) {
+                        return [...withoutCurrent, nextIncompleteTopicId];
+                    }
+                    
+                    return withoutCurrent;
+                });
+            }
         }
     };
 
@@ -236,6 +250,7 @@ function Course() {
                                             {isTopicCompleted(topic.id) ? 'Completed' : 'Mark as Complete'}
                                         </button>
                                     </div>
+                                    
                                 </div>
                             </div>
                         ))
@@ -245,6 +260,29 @@ function Course() {
                         </div>
                     )}
                 </div>
+                
+                {/* Share Dialog */}
+                {showShareDialog && (
+                    <div className="share-dialog-overlay">
+                        <div className="share-dialog">
+                            <h3>Share this with the community?</h3>
+                            <div className="share-dialog-buttons">
+                                <button 
+                                    className="share-dialog-btn yes"
+                                    onClick={() => handleShareDialogResponse(true)}
+                                >
+                                    Yes
+                                </button>
+                                <button 
+                                    className="share-dialog-btn no"
+                                    onClick={() => handleShareDialogResponse(false)}
+                                >
+                                    No
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
