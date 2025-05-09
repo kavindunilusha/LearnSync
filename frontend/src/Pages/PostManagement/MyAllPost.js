@@ -52,13 +52,14 @@ function MyAllPost() {
               userID,
               fullName: res.data.fullname,
             }))
+            // If fetching user details fails, log the error
             .catch((error) => {
               console.error(`Error fetching user details for userID ${userID}:`, error);
               return { userID, fullName: 'Anonymous' };
             })
         );
-        const owners = await Promise.all(ownerPromises);
-        const ownerMap = owners.reduce((acc, owner) => {
+        const owners = await Promise.all(ownerPromises);// Wait for all user detail fetch promises to resolve
+        const ownerMap = owners.reduce((acc, owner) => {// Convert the list of owners into a map of userID to fullName
           acc[owner.userID] = owner.fullName;
           return acc;
         }, {});
