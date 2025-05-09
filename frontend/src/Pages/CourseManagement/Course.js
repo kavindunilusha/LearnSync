@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import NavBar from '../../Components/NavBar/NavBar';
 import './Courses.css';
+import AddAchievementPopup from '../AchievementsManagement/AddAchievementPopup';
 
 function Course() {
     const { courseId } = useParams();
@@ -13,6 +14,7 @@ function Course() {
     const [completionPercentage, setCompletionPercentage] = useState(0);
     const [showShareDialog, setShowShareDialog] = useState(false);
     const [currentTopicId, setCurrentTopicId] = useState(null);
+    const [showAchievementForm, setShowAchievementForm] = useState(false);
 
     useEffect(() => {
         fetch(`http://localhost:8080/courses/${courseId}`)
@@ -66,8 +68,8 @@ function Course() {
     const handleShareDialogResponse = (shouldShare) => {
         setShowShareDialog(false);
         if (shouldShare) {
-            // Navigate to AddAchievements page
-            navigate('/addAchievements');
+            // Show the achievement form popup instead of navigating
+            setShowAchievementForm(true);
         } else {
             // Just collapse the current topic and expand the next one
             if (course && course.topics) {
@@ -96,6 +98,31 @@ function Course() {
                     return withoutCurrent;
                 });
             }
+        }
+    };
+
+    const handleAchievementSubmit = () => {
+        setShowAchievementForm(false);
+        // Handle the topic completion flow after achievement is submitted
+        if (course && course.topics) {
+            const currentIndex = course.topics.findIndex(topic => topic.id === currentTopicId);
+            
+            let nextIncompleteTopicId = null;
+            for (let i = currentIndex + 1; i < course.topics.length; i++) {
+                const topicId = course.topics[i].id;
+                if (!completedTopicIds.includes(topicId) && topicId !== currentTopicId) {
+                    nextIncompleteTopicId = topicId;
+                    break;
+                }
+            }
+
+            setExpandedTopicIds(prev => {
+                const withoutCurrent = prev.filter(id => id !== currentTopicId);
+                if (nextIncompleteTopicId && !withoutCurrent.includes(nextIncompleteTopicId)) {
+                    return [...withoutCurrent, nextIncompleteTopicId];
+                }
+                return withoutCurrent;
+            });
         }
     };
 
@@ -282,6 +309,14 @@ function Course() {
                             </div>
                         </div>
                     </div>
+                )}
+
+                {/* Achievement Form Popup */}
+                {showAchievementForm && (
+                    <AddAchievementPopup 
+                        onClose={() => setShowAchievementForm(false)}
+                        onSubmit={handleAchievementSubmit}
+                    />
                 )}
             </div>
         </div>
