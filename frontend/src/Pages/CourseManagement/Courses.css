@@ -736,3 +736,63 @@
     cursor: not-allowed;
   }
   
+  .share-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .share-dialog {
+    background: #3e3d3e;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+  }
+  
+  .share-dialog h3 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  
+  .share-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .share-dialog-btn {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .share-dialog-btn.yes {
+    background: linear-gradient(45deg, #6b46c1, #805ad5);
+    color: white;
+  }
+  
+  .share-dialog-btn.no {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .share-dialog-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
