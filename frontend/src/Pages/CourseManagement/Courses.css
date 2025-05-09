@@ -379,22 +379,20 @@
 
 /* Mark as Complete Button */
 .mark-complete-btn {
-  background: #48bb78;
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 20px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 16px;
-  display: inline-block;
+  background: linear-gradient(135deg, #004c5d 0%, #ff715b 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 
 .mark-complete-btn:hover {
-  background: #38a169;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 113, 91, 0.3);
 }
 
 .mark-complete-btn:disabled {
