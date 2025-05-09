@@ -183,7 +183,11 @@ function Course() {
                 <h1>{course.title}</h1>
                 <p>{course.description}</p>
             </div>
-
+            <div className="course-tags">
+                            {course.tags && course.tags.map((tag, index) => (
+                                <span key={index} className="course-tag">{tag}</span>
+                            ))}
+                        </div>
             {/* Add Progress Bar Section */}
             <div className="progress-section">
                 <div className="progress-label-row">
