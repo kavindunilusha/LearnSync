@@ -19,11 +19,11 @@ Modal.setAppElement('#root');
 
 function MyAllPost() {
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [postOwners, setPostOwners] = useState({});
-  const [showMyPosts, setShowMyPosts] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [filteredPosts, setFilteredPosts] = useState([]);// Stores all fetched posts from the backend
+  const [postOwners, setPostOwners] = useState({});// Stores posts after applying filters
+  const [showMyPosts, setShowMyPosts] = useState(false);// mapp post IDs to user details
+  const [isModalOpen, setIsModalOpen] = useState(false);// Controls whether to show only the current user's posts
+  const [selectedMedia, setSelectedMedia] = useState(null);// Controls visibility of the media modal (e.g., image or video viewer)
   const [followedUsers, setFollowedUsers] = useState([]); // State to track followed users
   const [newComment, setNewComment] = useState({}); // State for new comments
   const [editingComment, setEditingComment] = useState({}); // State for editing comments
