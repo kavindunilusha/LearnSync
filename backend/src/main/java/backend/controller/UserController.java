@@ -131,6 +131,7 @@ public class UserController {
         message.setSubject("Your OTP for Email Verification");
         message.setText("Your OTP is: " + otp);
         mailSender.send(message);
+        System.out.println("OTP sent to email: " + email + ", OTP: " + otp); // Log the OTP
     }
 
 
@@ -144,14 +145,19 @@ public class UserController {
         String email = request.get("email");
         String otp = request.get("otp");
 
+        System.out.println("Verifying OTP for email: " + email + ", OTP: " + otp); // Log the input
+
         if (email == null || otp == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and OTP are required."));
         }
 
         UserModel user = temporaryUserStorage.get(email);
         if (user == null) {
+            System.out.println("User not found or OTP expired for email: " + email); // Log missing user
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
         }
+
+        System.out.println("Stored OTP for email: " + email + " is: " + user.getOtp()); // Log the stored OTP
 
         if (user.getOtp().equals(otp)) {
             user.setVerified(true); // Mark user as verified
@@ -161,6 +167,7 @@ public class UserController {
 
             return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
         } else {
+            System.out.println("Invalid OTP for email: " + email); // Log invalid OTP
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP."));
         }
     }
