@@ -21,7 +21,7 @@ public class AWSConfig {
     private String region;
 
     @Bean
-    AmazonS3 s3() {
+    public AmazonS3 amazonS3() {  // Changed method name to match the autowired variable name
         AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonS3ClientBuilder
                 .standard()
