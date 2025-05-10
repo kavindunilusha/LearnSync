@@ -496,19 +496,24 @@ function MyAllPost() {
 
       {/* Modal for displaying full media */}
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
+        isOpen={isModalOpen}// Open the modal if `isModalOpen` is true
+        onRequestClose={closeModal}// Close the modal when requested 
         contentLabel="Media Modal"
         className="media-modal"
         overlayClassName="media-modal-overlay"
       >
+        {/* Button to close the modal */}
         <button className="close-modal-btn" onClick={closeModal}>x</button>
+
+        {/* Check if the selected media is a video or an image */}
         {selectedMedia && selectedMedia.endsWith('.mp4') ? (
+          // Display video if media is of .mp4 type
           <video controls className="modal-media">
             <source src={`http://localhost:8080${selectedMedia}`} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         ) : (
+          // Display image if media is not a video (default case)
           <img src={`http://localhost:8080${selectedMedia}`} alt="Full Media" className="modal-media" />
         )}
       </Modal>
