@@ -366,27 +366,37 @@ function MyAllPost() {
                     )}
                   </div>
                   <div className='user_details_card_di'>
+                    {/* Display post title */}
                     <p className='card_post_title'>{post.title}</p>
+
+                    {/* Display post description with style to handle line breaks */}
                     <p className='card_post_description' style={{ whiteSpace: "pre-line" }}>{post.description}</p>
+
+                    {/* Display post category, fallback to 'Uncategorized' if not available */}
                     <p className='card_post_category'>Category: {post.category || 'Uncategorized'}</p>
                   </div>
+                  {/* Media Collage: Display up to the first 4 media items */}
                   <div className="media-collage">
                     {post.media.slice(0, 4).map((mediaUrl, index) => (
                       <div
                         key={index}
-                        className={`media-item ${post.media.length > 4 && index === 3 ? 'media-overlay' : ''}`}
-                        onClick={() => openModal(mediaUrl)}
+                        className={`media-item ${post.media.length > 4 && index === 3 ? 'media-overlay' : ''}`}// Apply overlay class if there are more than 4 media items
+                        onClick={() => openModal(mediaUrl)}// Open media in modal when clicked
                       >
+                        {/* If media is a video */}
                         {mediaUrl.endsWith('.mp4') ? (
                           <video controls>
                             <source src={`http://localhost:8080${mediaUrl}`} type="video/mp4" />
                             Your browser does not support the video tag.
                           </video>
                         ) : (
+                          
                           <img src={`http://localhost:8080${mediaUrl}`} alt="Post Media" />
-                        )}
+                        )}{/* If media is an image */}
+
+                        {/* If there are more than 4 media items, show the overlay text */}
                         {post.media.length > 4 && index === 3 && (
-                          <div className="overlay-text">+{post.media.length - 4}</div>
+                          <div className="overlay-text">+{post.media.length - 4}</div>// Show remaining media count
                         )}
                       </div>
                     ))}
