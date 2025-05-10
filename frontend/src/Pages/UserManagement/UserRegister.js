@@ -14,7 +14,8 @@ function UserRegister() {
     });
     const [profilePicture, setProfilePicture] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
-    const [verificationCode, setVerificationCode] = useState('');
+    // below is the initial setup for sending verification code---------------------------------
+    // const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
     const [userEnteredCode, setUserEnteredCode] = useState('');
     const [skillInput, setSkillInput] = useState('');
@@ -60,7 +61,9 @@ function UserRegister() {
     //     }
     // };
 
-    const sendVerificationCode = async (email) => {
+    //below is the new code for sending and verifying OTP--------------------------------------------------------------
+
+    const sendOtp = async (email) => {
         try {
             const response = await fetch('http://localhost:8080/verifyOtp', {
                 method: 'POST',
@@ -79,6 +82,29 @@ function UserRegister() {
             alert('An error occurred while sending the OTP.');
         }
     };
+
+    const verifyOtp = async (email, otp) => {
+        try {
+            const response = await fetch('http://localhost:8080/verifyOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp }),
+            });
+    
+            if (response.ok) {
+                alert('Verification successful!');
+                window.location.href = '/'; // Redirect to login or home page
+            } else {
+                const data = await response.json();
+                alert(data.message || 'Invalid OTP. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+            alert('An error occurred while verifying the OTP.');
+        }
+    };
+
+    //above is the new code for sending and verifying OTP--------------------------------------------------------------
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -142,42 +168,41 @@ function UserRegister() {
         }
     };
 
-    const handleVerifyCode = () => {
-        const savedCode = localStorage.getItem('verificationCode');
-        if (userEnteredCode === savedCode) {
-            alert('Verification successful!');
-            localStorage.removeItem('verificationCode');
-            window.location.href = '/';
-        } else {
-            alert('Invalid verification code. Please try again.');
-        }
-    };
-
-
-
-
-    // Replace the above with the following code to handle the verification modal
-    // const handleVerifyCode = async () => {
-    //     try {
-    //         const response = await fetch('http://localhost:8080/verifyOtp', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({ email: formData.email, otp: userEnteredCode }),
-    //         });
-    
-    //         if (response.ok) {
-    //             alert('Verification successful!');
-    //             setIsVerificationModalOpen(false); // Close the modal
-    //             window.location.href = '/'; // Redirect to the login page
-    //         } else {
-    //             const data = await response.json();
-    //             alert(data.message || 'Invalid verification code. Please try again.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error verifying OTP:', error);
-    //         alert('An error occurred while verifying the OTP. Please try again.');
+    // following is the initial setup for verifying the code---------------------------------
+    // const handleVerifyCode = () => {
+    //     const savedCode = localStorage.getItem('verificationCode');
+    //     if (userEnteredCode === savedCode) {
+    //         alert('Verification successful!');
+    //         localStorage.removeItem('verificationCode');
+    //         window.location.href = '/';
+    //     } else {
+    //         alert('Invalid verification code. Please try again.');
     //     }
     // };
+
+    //below is the new code for verifying the OTP--------------------------------------------------------------
+    // Replace the above with the following code to handle the verification modal
+    const handleVerifyCode = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/verifyOtp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email, otp: userEnteredCode }),
+            });
+    
+            if (response.ok) {
+                alert('Verification successful!');
+                setIsVerificationModalOpen(false); // Close the modal
+                window.location.href = '/'; // Redirect to the login page
+            } else {
+                const data = await response.json();
+                alert(data.message || 'Invalid verification code. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error verifying OTP:', error);
+            alert('An error occurred while verifying the OTP. Please try again.');
+        }
+    };
 
 
     return (
