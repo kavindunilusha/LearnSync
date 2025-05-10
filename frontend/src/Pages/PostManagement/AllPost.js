@@ -18,12 +18,12 @@ import './PostManagement.css';
 Modal.setAppElement('#root');
 
 function AllPost() {
-  const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [postOwners, setPostOwners] = useState({});
-  const [showMyPosts, setShowMyPosts] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [posts, setPosts] = useState([]);// Holds all fetched posts from the backend
+  const [filteredPosts, setFilteredPosts] = useState([]);// Holds the currently filtered list of posts
+  const [postOwners, setPostOwners] = useState({});// Maps user IDs to full names for displaying post owner names
+  const [showMyPosts, setShowMyPosts] = useState(false);// Controls whether to show only the logged-in user's posts
+  const [isModalOpen, setIsModalOpen] = useState(false);// Controls the visibility of the media preview modal
+  const [selectedMedia, setSelectedMedia] = useState(null);// Stores the currently selected media URL to be shown in the modal
   const [followedUsers, setFollowedUsers] = useState([]); // State to track followed users
   const [newComment, setNewComment] = useState({}); // State for new comments
   const [editingComment, setEditingComment] = useState({}); // State for editing comments
@@ -33,20 +33,23 @@ function AllPost() {
   const loggedInUserID = localStorage.getItem('userID'); // Get the logged-in user's ID
 
   useEffect(() => {
+    // Define an async function to fetch posts and their owner names
     // Fetch all posts from the backend
     const fetchPosts = async () => {
       try {
         const response = await axios.get('http://localhost:8080/posts');
-        setPosts(response.data);
+        setPosts(response.data);// Store all posts
         setFilteredPosts(response.data); // Initially show all posts
 
         // Fetch post owners' names
         const userIDs = [...new Set(response.data.map((post) => post.userID))]; // Get unique userIDs
+        
+        // Create a promise for each userID to fetch their details
         const ownerPromises = userIDs.map((userID) =>
           axios.get(`http://localhost:8080/user/${userID}`)
             .then((res) => ({
               userID,
-              fullName: res.data.fullname,
+              fullName: res.data.fullname,// Return fullName on success
             }))
             .catch((error) => {
               if (error.response && error.response.status === 404) {
@@ -55,25 +58,29 @@ function AllPost() {
                 setPosts((prevPosts) => prevPosts.filter((post) => post.userID !== userID));
                 setFilteredPosts((prevFilteredPosts) => prevFilteredPosts.filter((post) => post.userID !== userID));
               } else {
+                // Log any other error types
                 console.error(`Error fetching user details for userID ${userID}:`, error);
               }
+              // Return placeholder name 
               return { userID, fullName: 'Anonymous' };
             })
         );
-        const owners = await Promise.all(ownerPromises);
+        const owners = await Promise.all(ownerPromises);// Wait for all user detail fetch requests to complete
+
+        // Convert the array into an object
         const ownerMap = owners.reduce((acc, owner) => {
           acc[owner.userID] = owner.fullName;
           return acc;
         }, {});
         console.log('Post Owners Map:', ownerMap); // Debug log to verify postOwners map
-        setPostOwners(ownerMap);
+        setPostOwners(ownerMap);// Store the owner map in state for use in the UI
       } catch (error) {
         console.error('Error fetching posts:', error); // Log error for fetching posts
       }
     };
 
-    fetchPosts();
-  }, []);
+    fetchPosts();// Call the async function
+  }, []);// ensures useEffect runs only once
 
   useEffect(() => {
     const fetchFollowedUsers = async () => {
@@ -91,27 +98,35 @@ function AllPost() {
     fetchFollowedUsers();
   }, []);
 
+  // Handles deleting a post
   const handleDelete = async (postId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this post?');
+    // Ask user for confirmation before deleting
+    const confirmDelete = window.confirm('Do you want to delete this post?');
     if (!confirmDelete) {
       return; // Exit if the user cancels the confirmation
     }
 
     try {
+      // Send DELETE request to backend
       await axios.delete(`http://localhost:8080/posts/${postId}`);
       alert('Post deleted successfully!');
+
+      // Remove the deleted post from both lists to update the UI
       setPosts(posts.filter((post) => post.id !== postId)); // Remove the deleted post from the UI
       setFilteredPosts(filteredPosts.filter((post) => post.id !== postId)); // Update filtered posts
     } catch (error) {
+      // Handle errors
       console.error('Error deleting post:', error);
       alert('Failed to delete post.');
     }
   };
 
+  // Navigates to the update post page with the selected post ID
   const handleUpdate = (postId) => {
     navigate(`/updatePost/${postId}`); // Navigate to the UpdatePost page with the post ID
   };
 
+  // Toggles between showing all posts and only the logged-in user's posts
   const handleMyPostsToggle = () => {
     if (showMyPosts) {
       // Show all posts
@@ -277,11 +292,13 @@ function AllPost() {
     }
   };
 
+  // Handle search input and filter posts based on query
   const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
+    const query = e.target.value.toLowerCase();// Normalize the input to lowercase
+    setSearchQuery(query);// Update the search query state
 
-    const validCategories = ['jewelry making', 'painting', 'woodworking', 'crochet', 'other creative'];
+    // Define a list of valid categories to match against
+    const validCategories = ['ai and data science','web framework','social media','graphic design','other creative'];
     let filtered = posts;
 
     if (validCategories.includes(query)) {
@@ -298,14 +315,16 @@ function AllPost() {
       );
     }
     
-    setFilteredPosts(filtered);
+    setFilteredPosts(filtered); // Update the UI with filtered results
   };
 
+  // Open the media modal with the selected media URL
   const openModal = (mediaUrl) => {
-    setSelectedMedia(mediaUrl);
+    setSelectedMedia(mediaUrl);// Set the selected media
     setIsModalOpen(true);
   };
 
+  // Close the media modal and reset selected media
   const closeModal = () => {
     setSelectedMedia(null);
     setIsModalOpen(false);
@@ -313,28 +332,31 @@ function AllPost() {
 
   return (
     <div className="post-page">
-      <NavBar />
+      <NavBar />{/* Top navigation bar */}
       <div className="post-content">
+        {/* Search bar section */}
         <div className="search-section">
           <input
             type="text"
             className="search-input"
             placeholder="Search posts..."
             value={searchQuery}
-            onChange={handleSearch}
+            onChange={handleSearch}// Filters posts on input
           />
         </div>
 
+        {/* Display posts */}
         <div className="post-grid">
           {filteredPosts.length === 0 ? (
+            // Show no posts found if no posts match the filter
             <div className="no-posts">
               <h3>No Posts Found</h3>
-              <p>Share your thoughts with the community</p>
+              <p>Share your skills with the Experties on Industry</p>
               <button 
                 className="create-button"
-                onClick={() => (window.location.href = '/addNewPost')}
+                onClick={() => (window.location.href = '/addNewPost')}// Redirect to post creation
               >
-                Create Post
+                Create Skill Post
               </button>
             </div>
           ) : (
