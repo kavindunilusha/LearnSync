@@ -33,20 +33,23 @@ function AllPost() {
   const loggedInUserID = localStorage.getItem('userID'); // Get the logged-in user's ID
 
   useEffect(() => {
+    // Define an async function to fetch posts and their owner names
     // Fetch all posts from the backend
     const fetchPosts = async () => {
       try {
         const response = await axios.get('http://localhost:8080/posts');
-        setPosts(response.data);
+        setPosts(response.data);// Store all posts
         setFilteredPosts(response.data); // Initially show all posts
 
         // Fetch post owners' names
         const userIDs = [...new Set(response.data.map((post) => post.userID))]; // Get unique userIDs
+        
+        // Create a promise for each userID to fetch their details
         const ownerPromises = userIDs.map((userID) =>
           axios.get(`http://localhost:8080/user/${userID}`)
             .then((res) => ({
               userID,
-              fullName: res.data.fullname,
+              fullName: res.data.fullname,// Return fullName on success
             }))
             .catch((error) => {
               if (error.response && error.response.status === 404) {
@@ -55,8 +58,10 @@ function AllPost() {
                 setPosts((prevPosts) => prevPosts.filter((post) => post.userID !== userID));
                 setFilteredPosts((prevFilteredPosts) => prevFilteredPosts.filter((post) => post.userID !== userID));
               } else {
+                // Log any other error types
                 console.error(`Error fetching user details for userID ${userID}:`, error);
               }
+              // Return placeholder name 
               return { userID, fullName: 'Anonymous' };
             })
         );
