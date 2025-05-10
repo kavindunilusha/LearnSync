@@ -1,6 +1,6 @@
 package backend.model;
 
-import jakarta.persistence.GeneratedValue;
+// import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +10,7 @@ import java.util.Set;
 @Document(collection = "user")
 public class UserModel {
     @Id
-    @GeneratedValue
+    // @GeneratedValue
     private String id;
     private String fullname;
     private String email;
