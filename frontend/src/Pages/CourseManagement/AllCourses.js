@@ -77,7 +77,7 @@ function AllCourses() {
                                     >
                                         {course.courseImageUrl ? (
                                             <img
-                                                src={`http://localhost:8080/courses/images/${course.courseImageUrl}`}
+                                                src={course.courseImageUrl}
                                                 alt={course.title}
                                                 className="course-image"
                                             />
