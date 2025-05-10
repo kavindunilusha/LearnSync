@@ -119,7 +119,7 @@ function MyLearningPlan() {
                 <div className="media-section">
                   {post.imageUrl && (
                     <img
-                      src={`http://localhost:8080/learningPlan/planImages/${post.imageUrl}`}
+                      src={post.imageUrl}
                       alt={post.title}
                     />
                   )}
