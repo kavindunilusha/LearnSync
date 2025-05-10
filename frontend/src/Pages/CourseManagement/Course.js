@@ -179,7 +179,7 @@ function Course() {
         <div className="course-page">
             <NavBar />
             <div className="course-header">
-                <img src={course.imageUrl} alt={course.title} />
+                <img src={course.courseImageUrl} alt={course.title} />
                 <h1>{course.title}</h1>
                 <p>{course.description}</p>
             </div>

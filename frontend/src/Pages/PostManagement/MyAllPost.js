@@ -18,12 +18,12 @@ import { FaCommentAlt } from "react-icons/fa";
 Modal.setAppElement('#root');
 
 function MyAllPost() {
-  const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);// Stores all fetched posts from the backend
-  const [postOwners, setPostOwners] = useState({});// Stores posts after applying filters
-  const [showMyPosts, setShowMyPosts] = useState(false);// mapp post IDs to user details
-  const [isModalOpen, setIsModalOpen] = useState(false);// Controls whether to show only the current user's posts
-  const [selectedMedia, setSelectedMedia] = useState(null);// Controls visibility of the media modal (e.g., image or video viewer)
+  const [posts, setPosts] = useState([]);// Stores all fetched posts from the backend
+  const [filteredPosts, setFilteredPosts] = useState([]);// Stores posts after applying filters
+  const [postOwners, setPostOwners] = useState({});// mapp post IDs to user details
+  const [showMyPosts, setShowMyPosts] = useState(false);// Controls whether to show only the current user's posts
+  const [isModalOpen, setIsModalOpen] = useState(false);// Controls visibility of the media modal
+  const [selectedMedia, setSelectedMedia] = useState(null);// Stores the media item currently selected
   const [followedUsers, setFollowedUsers] = useState([]); // State to track followed users
   const [newComment, setNewComment] = useState({}); // State for new comments
   const [editingComment, setEditingComment] = useState({}); // State for editing comments
@@ -64,7 +64,7 @@ function MyAllPost() {
           return acc;
         }, {});
         console.log('Post Owners Map:', ownerMap); // Debug log to verify postOwners map
-        setPostOwners(ownerMap);
+        setPostOwners(ownerMap);// Update the state so the UI can use this mapping
       } catch (error) {
         console.error('Error fetching posts:', error); // Log error for fetching posts
       }
@@ -90,17 +90,22 @@ function MyAllPost() {
   }, []);
 
   const handleDelete = async (postId) => {
+    // Show a confirmation dialog to the user
     const confirmDelete = window.confirm('Are you sure you want to delete this post?');
     if (!confirmDelete) {
       return; // Exit if the user cancels the confirmation
     }
 
     try {
+      // Send a DELETE request to the backend to remove the post
       await axios.delete(`http://localhost:8080/posts/${postId}`);
+      // Notify the user of successful deletion
       alert('Post deleted successfully!');
+      // Update the local state to remove the deleted post from the list
       setPosts(posts.filter((post) => post.id !== postId)); // Remove the deleted post from the UI
       setFilteredPosts(filteredPosts.filter((post) => post.id !== postId)); // Update filtered posts
     } catch (error) {
+       // Handle any errors that occur during the delete operation
       console.error('Error deleting post:', error);
       alert('Failed to delete post.');
     }
@@ -276,8 +281,8 @@ function MyAllPost() {
   };
 
   const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
+    const query = e.target.value.toLowerCase();// Get the search query and convert to lowercase
+    setSearchQuery(query); // Update the search query state
 
     // Filter posts based on title, description, or category
     const filtered = posts.filter(
@@ -286,48 +291,56 @@ function MyAllPost() {
         post.description.toLowerCase().includes(query) ||
         (post.category && post.category.toLowerCase().includes(query))
     );
-    setFilteredPosts(filtered);
+    setFilteredPosts(filtered);// Update the filtered posts to show in the UI
   };
 
   const openModal = (mediaUrl) => {
-    setSelectedMedia(mediaUrl);
-    setIsModalOpen(true);
+    setSelectedMedia(mediaUrl);// Set the selected media (image/video) to preview
+    setIsModalOpen(true);// Open the media modal
   };
 
   const closeModal = () => {
-    setSelectedMedia(null);
-    setIsModalOpen(false);
+    setSelectedMedia(null);// Clear selected media
+    setIsModalOpen(false);// Close the media modal
   };
 
   return (
     <div>
       <div className='continer'>
+        {/* Navigation Bar */}
         <NavBar />
         <div className='continSection'>
+          {/* Search Input for Filtering Posts */}
           <div className='searchinput'>
             <input
               type="text"
               className="Auth_input "
-              placeholder="Search posts by title, description, or category"
-              value={searchQuery}
-              onChange={handleSearch}
+              placeholder="Search posts..."
+              value={searchQuery} // Binds the search query to the input field
+              onChange={handleSearch} // Triggers the handleSearch function on input change
             />
           </div>
+          {/* Button to Create New Post */}
           <div className='add_new_btn' onClick={() => (window.location.href = '/addNewPost')}>
-            <IoIosCreate className='add_new_btn_icon' />
+            <IoIosCreate className='add_new_btn_icon' />{/* Icon for creating new post */}
           </div>
+
+          {/* Displaying Posts */}
           <div className='post_card_continer'>
+            {/* If no filtered posts, show a "No posts found" message */}
             {filteredPosts.length === 0 ? (
               <div className='not_found_box'>
                 <div className='not_found_img'></div>
                 <p className='not_found_msg'>No posts found. Please create a new post.</p>
-                <button className='not_found_btn' onClick={() => (window.location.href = '/addNewPost')}>Create New Post</button>
+                <button className='not_found_btn' onClick={() => (window.location.href = '/addNewPost')}>Create New Post</button>{/* Button to navigate to create post */}
               </div>
             ) : (
+              // Map through filtered posts and display each one
               filteredPosts.map((post) => (
                 <div key={post.id} className='post_card'>
                   <div className='user_details_card'>
                     <div className='name_section_post'>
+                      {/* Display the post owner's name */}
                       <p className='name_section_post_owner_name'>{postOwners[post.userID] || 'Anonymous'}</p>
                       {post.userID !== loggedInUserID && (
                         <button
@@ -338,14 +351,16 @@ function MyAllPost() {
                         </button>
                       )}
                     </div>
+
+                    {/* Action buttons for posts created by the logged-in user */}
                     {post.userID === loggedInUserID && (
                       <div>
                         <div className='action_btn_icon_post'>
                           <FaEdit
-                            onClick={() => handleUpdate(post.id)} className='action_btn_icon' />
+                            onClick={() => handleUpdate(post.id)} className='action_btn_icon' />{/* Edit the post*/}
                           <RiDeleteBin6Fill
                             onClick={() => handleDelete(post.id)}
-                            className='action_btn_icon' />
+                            className='action_btn_icon' />{/*Delete the post*/}
                         </div>
                       </div>
                     )}
