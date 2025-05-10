@@ -7,6 +7,7 @@ import backend.model.NotificationModel;
 import backend.repository.LearningPlanRepository;
 import backend.repository.NotificationRepository;
 import backend.repository.UserRepository;
+import backend.service.AWSService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -18,7 +19,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,12 +30,18 @@ import java.util.UUID;
 public class LearningPlanController {
     @Autowired
     private LearningPlanRepository learningPlanRepository;
-    private final Path root = Paths.get("uploads/plan");
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private AWSService awsService;
+
+    private final Path root = Paths.get("uploads/plan");
+    private final String S3_FOLDER_PATH = "learningPlans/";
 
     //Insert function
     @PostMapping("/learningPlan")
@@ -54,7 +60,7 @@ public class LearningPlanController {
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         newLearningPlanModel.setCreatedAt(currentDateTime);
 
-        return learningPlanRepository.save(newLearningPlanModel); 
+        return learningPlanRepository.save(newLearningPlanModel);
     }
 
     @PostMapping("/learningPlan/planUpload")
@@ -63,10 +69,66 @@ public class LearningPlanController {
             String extension = file.getOriginalFilename()
                     .substring(file.getOriginalFilename().lastIndexOf("."));
             String filename = UUID.randomUUID() + extension;
-            Files.copy(file.getInputStream(), this.root.resolve(filename));
-            return filename;
+
+            // Upload to S3 bucket using the folder path + generated filename
+            String s3Key = S3_FOLDER_PATH + filename;
+            String s3Url = awsService.upload(file, s3Key);
+
+            return s3Url; // Return the full S3 URL directly from the service
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload image: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/learningPlan/with-image")
+    public LearningPlanModel createLearningPlanWithImage(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("contentURL") String contentURL,
+            @RequestParam("tags") List<String> tags,
+            @RequestParam("postOwnerID") String postOwnerID,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("category") String category,
+            @RequestParam(value = "templateID", required = false) int templateID) {
+
+        try {
+            // Upload image to S3
+            String extension = file.getOriginalFilename()
+                    .substring(file.getOriginalFilename().lastIndexOf("."));
+            String filename = UUID.randomUUID() + extension;
+
+            // Upload to S3 bucket and get URL directly
+            String s3Key = S3_FOLDER_PATH + filename;
+            String s3Url = awsService.upload(file, s3Key);
+
+            // Fetch user's full name from UserRepository
+            String postOwnerName = userRepository.findById(postOwnerID)
+                    .map(user -> user.getFullname())
+                    .orElseThrow(() -> new UserNotFoundException("User not found for ID: " + postOwnerID));
+
+            // Set current date and time
+            String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+            // Create and save learning plan with S3 image URL
+            LearningPlanModel learningPlan = new LearningPlanModel();
+            learningPlan.setTitle(title);
+            learningPlan.setDescription(description);
+            learningPlan.setContentURL(contentURL);
+            learningPlan.setTags(tags);
+            learningPlan.setPostOwnerID(postOwnerID);
+            learningPlan.setPostOwnerName(postOwnerName);
+            learningPlan.setStartDate(startDate);
+            learningPlan.setEndDate(endDate);
+            learningPlan.setCategory(category);
+            learningPlan.setTemplateID(templateID);
+            learningPlan.setImageUrl(s3Url);
+            learningPlan.setCreatedAt(currentDateTime);
+
+            return learningPlanRepository.save(learningPlan);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create learning plan with image: " + e.getMessage());
         }
     }
 
@@ -109,7 +171,7 @@ public class LearningPlanController {
                     learningPlanModel.setStartDate(newLearningPlanModel.getStartDate()); // Update startDate
                     learningPlanModel.setEndDate(newLearningPlanModel.getEndDate());     // Update endDate
                     learningPlanModel.setCategory(newLearningPlanModel.getCategory());  // Update category
-                    
+
                     if (newLearningPlanModel.getPostOwnerID() != null && !newLearningPlanModel.getPostOwnerID().isEmpty()) {
                         learningPlanModel.setPostOwnerID(newLearningPlanModel.getPostOwnerID());
                         // Fetch and update the real name of the post owner
@@ -118,11 +180,46 @@ public class LearningPlanController {
                                 .orElseThrow(() -> new UserNotFoundException("User not found for ID: " + newLearningPlanModel.getPostOwnerID()));
                         learningPlanModel.setPostOwnerName(postOwnerName);
                     }
-                    
+
                     learningPlanModel.setTemplateID(newLearningPlanModel.getTemplateID()); // Update templateID
                     return learningPlanRepository.save(learningPlanModel);
                 }).orElseThrow(() -> new LearningPlanNotFoundException(id));
     }
+
+    @PutMapping("/learningPlan/{id}/update-image")
+    public LearningPlanModel updateLearningPlanImage(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file) {
+
+        return learningPlanRepository.findById(id)
+                .map(learningPlanModel -> {
+                    try {
+                        // Get the previous image URL to extract the key for deletion later if needed
+                        String previousUrl = learningPlanModel.getImageUrl();
+
+                        // Upload new image to S3
+                        String extension = file.getOriginalFilename()
+                                .substring(file.getOriginalFilename().lastIndexOf("."));
+                        String filename = UUID.randomUUID() + extension;
+
+                        // Upload to S3 bucket and get URL directly
+                        String s3Key = S3_FOLDER_PATH + filename;
+                        String s3Url = awsService.upload(file, s3Key);
+
+                        // Update learning plan with new S3 image URL
+                        learningPlanModel.setImageUrl(s3Url);
+
+                        // Option: Delete the previous image file from S3 if it exists
+                        // This would require parsing the previous URL to get the key
+                        // You could implement this if needed
+
+                        return learningPlanRepository.save(learningPlanModel);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to update learning plan image: " + e.getMessage());
+                    }
+                }).orElseThrow(() -> new LearningPlanNotFoundException(id));
+    }
+
     //Delete function
     @DeleteMapping("/learningPlan/{id}")
     public void delete(@PathVariable String id) {
