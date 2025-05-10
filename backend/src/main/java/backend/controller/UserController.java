@@ -152,12 +152,13 @@ public class UserController {
         System.out.println("Verifying OTP for email: " + email + ", OTP: " + otp); // Log the input
     
         if (email == null || otp == null) {
+            System.out.println("Email or OTP is null."); // Log null values
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and OTP are required."));
         }
     
         UserModel user = temporaryUserStorage.get(email);
         if (user == null) {
-            System.out.println("User not found or OTP expired for email: " + email); // Log missing user
+            System.out.println("User not found in temporary storage for email: " + email); // Log missing user
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
         }
     
