@@ -292,10 +292,12 @@ function AllPost() {
     }
   };
 
+  // Handle search input and filter posts based on query
   const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
+    const query = e.target.value.toLowerCase();// Normalize the input to lowercase
+    setSearchQuery(query);// Update the search query state
 
+    // Define a list of valid categories to match against
     const validCategories = ['ai and data science','web framework','social media','graphic design','other creative'];
     let filtered = posts;
 
@@ -313,14 +315,16 @@ function AllPost() {
       );
     }
     
-    setFilteredPosts(filtered);
+    setFilteredPosts(filtered); // Update the UI with filtered results
   };
 
+  // Open the media modal with the selected media URL
   const openModal = (mediaUrl) => {
-    setSelectedMedia(mediaUrl);
+    setSelectedMedia(mediaUrl);// Set the selected media
     setIsModalOpen(true);
   };
 
+  // Close the media modal and reset selected media
   const closeModal = () => {
     setSelectedMedia(null);
     setIsModalOpen(false);
@@ -328,26 +332,29 @@ function AllPost() {
 
   return (
     <div className="post-page">
-      <NavBar />
+      <NavBar />{/* Top navigation bar */}
       <div className="post-content">
+        {/* Search bar section */}
         <div className="search-section">
           <input
             type="text"
             className="search-input"
             placeholder="Search posts..."
             value={searchQuery}
-            onChange={handleSearch}
+            onChange={handleSearch}// Filters posts on input
           />
         </div>
 
+        {/* Display posts */}
         <div className="post-grid">
           {filteredPosts.length === 0 ? (
+            // Show no posts found if no posts match the filter
             <div className="no-posts">
               <h3>No Posts Found</h3>
-              <p>Share your thoughts with the community</p>
+              <p>Share your skills with the Experties on Industry</p>
               <button 
                 className="create-button"
-                onClick={() => (window.location.href = '/addNewPost')}
+                onClick={() => (window.location.href = '/addNewPost')}// Redirect to post creation
               >
                 Create Post
               </button>
