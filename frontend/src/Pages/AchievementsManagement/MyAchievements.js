@@ -86,7 +86,7 @@ function MyAchievements() {
 
                     {progress.imageUrl && (
                       <img
-                        src={`http://localhost:8080/achievements/images/${progress.imageUrl}`}
+                        src={progress.imageUrl}
                         alt="Achievement"
                         className='achievement_image'
                       />
