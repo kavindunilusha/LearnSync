@@ -15,7 +15,7 @@ function UserRegister() {
     const [profilePicture, setProfilePicture] = useState(null);
     const [previewImage, setPreviewImage] = useState(null);
     // below is the initial setup for sending verification code---------------------------------
-    // const [verificationCode, setVerificationCode] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
     const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
     const [userEnteredCode, setUserEnteredCode] = useState('');
     const [skillInput, setSkillInput] = useState('');
@@ -47,11 +47,27 @@ function UserRegister() {
     };
 
     // initial setup for sending verification code ----------------------------------------------------------------
+    const sendVerificationCode = async (email) => {
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        localStorage.setItem('verificationCode', code);
+        try {
+            await fetch('http://localhost:8080/sendVerificationCode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, code }),
+            });
+        } catch (error) {
+            console.error('Error sending verification code:', error);
+        }
+    };
+
+    //below is the new code for sending and verifying OTP--------------------------------------------------------------
+
     // const sendVerificationCode = async (email) => {
     //     const code = Math.floor(100000 + Math.random() * 900000).toString();
     //     localStorage.setItem('verificationCode', code);
     //     try {
-    //         await fetch('http://localhost:8080/sendVerificationCode', {
+    //         await fetch('http://localhost:8080/verifyOtp', {
     //             method: 'POST',
     //             headers: { 'Content-Type': 'application/json' },
     //             body: JSON.stringify({ email, code }),
@@ -61,120 +77,55 @@ function UserRegister() {
     //     }
     // };
 
-    //below is the new code for sending and verifying OTP--------------------------------------------------------------
-
-    const sendOtp = async (email) => {
-        try {
-            const response = await fetch('http://localhost:8080/verifyOtp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
-            });
+    // const sendOtp = async (email) => {
+    //     try {
+    //         const response = await fetch('http://localhost:8080/verifyOtp', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ email }),
+    //         });
     
-            if (response.ok) {
-                alert('OTP sent to your email.');
-            } else {
-                const data = await response.json();
-                alert(data.message || 'Failed to send OTP.');
-            }
-        } catch (error) {
-            console.error('Error sending OTP:', error);
-            alert('An error occurred while sending the OTP.');
-        }
-    };
+    //         if (response.ok) {
+    //             alert('OTP sent to your email.');
+    //         } else {
+    //             const data = await response.json();
+    //             alert(data.message || 'Failed to send OTP.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error sending OTP:', error);
+    //         alert('An error occurred while sending the OTP.');
+    //     }
+    // };
 
-    const verifyOtp = async (email, otp) => {
-        try {
-            const response = await fetch('http://localhost:8080/verifyOtp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, otp }),
-            });
+    // const verifyOtp = async (email, otp) => {
+    //     try {
+    //         const response = await fetch('http://localhost:8080/verifyOtp', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ email, otp }),
+    //         });
     
-            if (response.ok) {
-                alert('Verification successful!');
-                window.location.href = '/'; // Redirect to login or home page
-            } else {
-                const data = await response.json();
-                alert(data.message || 'Invalid OTP. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error verifying OTP:', error);
-            alert('An error occurred while verifying the OTP.');
-        }
-    };
+    //         if (response.ok) {
+    //             alert('Verification successful!');
+    //             window.location.href = '/'; // Redirect to login or home page
+    //         } else {
+    //             const data = await response.json();
+    //             alert(data.message || 'Invalid OTP. Please try again.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error verifying OTP:', error);
+    //         alert('An error occurred while verifying the OTP.');
+    //     }
+    // };
 
     //above is the new code for sending and verifying OTP--------------------------------------------------------------
 
 
     // initial setup for handle submit function------------------------------------------------
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     let isValid = true;
-
-    //     if (!formData.email) {
-    //         alert("Email is required");
-    //         isValid = false;
-    //     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    //         alert("Email is invalid");
-    //         isValid = false;
-    //     }
-
-    //     if (!profilePicture) {
-    //         alert("Profile picture is required");
-    //         isValid = false;
-    //     }
-    //     if (formData.skills.length < 2) {
-    //         alert("Please add at least two skills.");
-    //         isValid = false;
-    //     }
-    //     if (!isValid) {
-    //         return;
-    //     }
-
-    //     try {
-    //         const response = await fetch('http://localhost:8080/user', {
-    //             method: 'POST',
-    //             headers: { 'Content-Type': 'application/json' },
-    //             body: JSON.stringify({
-    //                 fullname: formData.fullname,
-    //                 email: formData.email,
-    //                 password: formData.password,
-    //                 phone: formData.phone,
-    //                 skills: formData.skills,
-    //                 bio: formData.bio,
-    //             }),
-    //         });
-
-    //         if (response.ok) {
-    //             const userId = (await response.json()).id;
-
-    //             if (profilePicture) {
-    //                 const profileFormData = new FormData();
-    //                 profileFormData.append('file', profilePicture);
-    //                 await fetch(`http://localhost:8080/user/${userId}/uploadProfilePicture`, {
-    //                     method: 'PUT',
-    //                     body: profileFormData,
-    //                 });
-    //             }
-
-    //             sendVerificationCode(formData.email);
-    //             setIsVerificationModalOpen(true);
-    //         } else if (response.status === 409) {
-    //             alert('Email already exists!');
-    //         } else {
-    //             alert('Failed to register user.');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error:', error);
-    //     }
-    // };
-
-    //below is the new code for handle submit function--------------------------------------------------------------
     const handleSubmit = async (e) => {
         e.preventDefault();
         let isValid = true;
-    
+
         if (!formData.email) {
             alert("Email is required");
             isValid = false;
@@ -182,7 +133,7 @@ function UserRegister() {
             alert("Email is invalid");
             isValid = false;
         }
-    
+
         if (!profilePicture) {
             alert("Profile picture is required");
             isValid = false;
@@ -194,7 +145,7 @@ function UserRegister() {
         if (!isValid) {
             return;
         }
-    
+
         try {
             const response = await fetch('http://localhost:8080/user', {
                 method: 'POST',
@@ -208,10 +159,10 @@ function UserRegister() {
                     bio: formData.bio,
                 }),
             });
-    
+
             if (response.ok) {
                 const userId = (await response.json()).id;
-    
+
                 if (profilePicture) {
                     const profileFormData = new FormData();
                     profileFormData.append('file', profilePicture);
@@ -220,9 +171,8 @@ function UserRegister() {
                         body: profileFormData,
                     });
                 }
-    
-                // Use sendOtp here
-                await sendOtp(formData.email);
+
+                sendVerificationCode(formData.email);
                 setIsVerificationModalOpen(true);
             } else if (response.status === 409) {
                 alert('Email already exists!');
@@ -234,41 +184,118 @@ function UserRegister() {
         }
     };
 
-    // following is the initial setup for verifying the code---------------------------------
-    // const handleVerifyCode = () => {
-    //     const savedCode = localStorage.getItem('verificationCode');
-    //     if (userEnteredCode === savedCode) {
-    //         alert('Verification successful!');
-    //         localStorage.removeItem('verificationCode');
-    //         window.location.href = '/';
-    //     } else {
-    //         alert('Invalid verification code. Please try again.');
+    //below is the new code for handle submit function--------------------------------------------------------------
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     let isValid = true;
+    
+    //     if (!formData.email) {
+    //         alert("Email is required");
+    //         isValid = false;
+    //     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    //         alert("Email is invalid");
+    //         isValid = false;
+    //     }
+    
+    //     if (!profilePicture) {
+    //         alert("Profile picture is required");
+    //         isValid = false;
+    //     }
+    //     if (formData.skills.length < 2) {
+    //         alert("Please add at least two skills.");
+    //         isValid = false;
+    //     }
+    //     if (!formData.fullname.trim()) {
+    //         alert("Full name is required");
+    //         isValid = false;
+    //     }
+    //     if (!formData.password.trim()) {
+    //         alert("Password is required");
+    //         isValid = false;
+    //     }
+    //     if (!formData.bio.trim()) {
+    //         alert("Bio is required");
+    //         isValid = false;
+    //     }
+    //     if (!isValid) {
+    //         return;
+    //     }
+    
+    //     try {
+    //         const response = await fetch('http://localhost:8080/user', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({
+    //                 fullname: formData.fullname,
+    //                 email: formData.email,
+    //                 password: formData.password,
+    //                 phone: formData.phone,
+    //                 skills: formData.skills,
+    //                 bio: formData.bio,
+    //             }),
+    //         });
+    
+    //         if (response.ok) {
+    //             const userId = (await response.json()).id;
+    
+    //             if (profilePicture) {
+    //                 const profileFormData = new FormData();
+    //                 profileFormData.append('file', profilePicture);
+    //                 await fetch(`http://localhost:8080/user/${userId}/uploadProfilePicture`, {
+    //                     method: 'PUT',
+    //                     body: profileFormData,
+    //                 });
+    //             }
+    
+    //             // Use sendOtp here
+    //             await sendOtp(formData.email);
+    //             setIsVerificationModalOpen(true);
+    //         } else if (response.status === 409) {
+    //             alert('Email already exists!');
+    //         } else {
+    //             alert('Failed to register user.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error:', error);
     //     }
     // };
 
-    //below is the new code for verifying the OTP--------------------------------------------------------------
-    // Replace the above with the following code to handle the verification modal
-    const handleVerifyCode = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/verifyOtp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: formData.email, otp: userEnteredCode }),
-            });
-    
-            if (response.ok) {
-                alert('Verification successful!');
-                setIsVerificationModalOpen(false); // Close the modal
-                window.location.href = '/'; // Redirect to the login page
-            } else {
-                const data = await response.json();
-                alert(data.message || 'Invalid verification code. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error verifying OTP:', error);
-            alert('An error occurred while verifying the OTP. Please try again.');
+    // following is the initial setup for verifying the code---------------------------------------------------
+    const handleVerifyCode = () => {
+        const savedCode = localStorage.getItem('verificationCode');
+        if (userEnteredCode === savedCode) {
+            alert('Verification successful!');
+            localStorage.removeItem('verificationCode');
+            window.location.href = '/';
+        } else {
+            alert('Invalid verification code. Please try again.');
         }
     };
+
+    //below is the new code for verifying the OTP--------------------------------------------------------------
+    // Replace the above with the following code to handle the verification modal
+    // const handleVerifyCode = async () => {
+    //     try {
+    //         console.log("Verifying OTP for email:", formData.email, "with OTP:", userEnteredCode); // Debug log
+    //         const response = await fetch('http://localhost:8080/verifyOtp', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ email: formData.email, otp: userEnteredCode }),
+    //         });
+    
+    //         if (response.ok) {
+    //             alert('Verification successful!');
+    //             setIsVerificationModalOpen(false); // Close the modal
+    //             window.location.href = '/'; // Redirect to the login page
+    //         } else {
+    //             const data = await response.json();
+    //             alert(data.message || 'Invalid verification code. Please try again.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error verifying OTP:', error);
+    //         alert('An error occurred while verifying the OTP. Please try again.');
+    //     }
+    // };
 
 
     return (
