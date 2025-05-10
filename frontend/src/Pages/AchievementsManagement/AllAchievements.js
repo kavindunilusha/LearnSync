@@ -82,7 +82,7 @@ function AllAchievements() {
               <div key={achievement.id} className="achievement-card">
                 {achievement.imageUrl && (
                   <img
-                    src={`http://localhost:8080/achievements/images/${achievement.imageUrl}`}
+                    src={achievement.imageUrl}
                     alt="Achievement"
                     className="achievement-image"
                   />
