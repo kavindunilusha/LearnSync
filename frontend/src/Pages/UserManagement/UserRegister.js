@@ -45,17 +45,38 @@ function UserRegister() {
         document.getElementById('profilePictureInput').click();
     };
 
+    // initial setup for sending verification code ----------------------------------------------------------------
+    // const sendVerificationCode = async (email) => {
+    //     const code = Math.floor(100000 + Math.random() * 900000).toString();
+    //     localStorage.setItem('verificationCode', code);
+    //     try {
+    //         await fetch('http://localhost:8080/sendVerificationCode', {
+    //             method: 'POST',
+    //             headers: { 'Content-Type': 'application/json' },
+    //             body: JSON.stringify({ email, code }),
+    //         });
+    //     } catch (error) {
+    //         console.error('Error sending verification code:', error);
+    //     }
+    // };
+
     const sendVerificationCode = async (email) => {
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-        localStorage.setItem('verificationCode', code);
         try {
-            await fetch('http://localhost:8080/sendVerificationCode', {
+            const response = await fetch('http://localhost:8080/verifyOtp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, code }),
+                body: JSON.stringify({ email }),
             });
+    
+            if (response.ok) {
+                alert('OTP sent to your email.');
+            } else {
+                const data = await response.json();
+                alert(data.message || 'Failed to send OTP.');
+            }
         } catch (error) {
-            console.error('Error sending verification code:', error);
+            console.error('Error sending OTP:', error);
+            alert('An error occurred while sending the OTP.');
         }
     };
 
