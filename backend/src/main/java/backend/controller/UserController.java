@@ -144,28 +144,34 @@ public class UserController {
     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email") != null ? request.get("email").trim() : null;
         String otp = request.get("otp") != null ? request.get("otp").trim() : null;
-
+    
         System.out.println("Verifying OTP for email: " + email + ", OTP: " + otp); // Log the input
-
+    
         if (email == null || otp == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and OTP are required."));
         }
-
+    
         UserModel user = temporaryUserStorage.get(email);
         if (user == null) {
             System.out.println("User not found or OTP expired for email: " + email); // Log missing user
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
         }
-
+    
         System.out.println("Stored OTP for email: " + email + " is: " + user.getOtp()); // Log the stored OTP
-
+    
         if (user.getOtp().equals(otp)) {
             user.setVerified(true); // Mark user as verified
             user.setOtp(null); // Clear OTP
-            userRepository.save(user); // Save user to the database
-            temporaryUserStorage.remove(email); // Remove from temporary storage
-
-            return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
+    
+            try {
+                userRepository.save(user); // Save user to the database
+                temporaryUserStorage.remove(email); // Remove from temporary storage
+                System.out.println("User saved to database: " + user.getEmail()); // Log success
+                return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
+            } catch (Exception e) {
+                System.out.println("Error saving user to database: " + e.getMessage()); // Log the error
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user to database."));
+            }
         } else {
             System.out.println("Invalid OTP for email: " + email); // Log invalid OTP
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP."));
