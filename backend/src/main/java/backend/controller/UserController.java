@@ -168,6 +168,7 @@ public class UserController {
             user.setOtp(null); // Clear OTP
     
             try {
+                System.out.println("Attempting to save user to database: " + user); // Log before saving
                 userRepository.save(user); // Save user to the database
                 temporaryUserStorage.remove(email); // Remove from temporary storage
                 System.out.println("User saved to database: " + user.getEmail()); // Log success
