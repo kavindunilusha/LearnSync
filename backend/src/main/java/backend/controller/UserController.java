@@ -113,7 +113,7 @@ public class UserController {
             // Temporarily store user details in memory
             temporaryUserStorage.put(newUserModel.getEmail(), newUserModel);
     
-            System.out.println("OTP sent to email: " + newUserModel.getEmail()); // Log success
+            System.out.println("User added to temporary storage: " + newUserModel); // Log success
             return ResponseEntity.ok(Map.of("message", "OTP sent to your email. Please verify to complete registration."));
         } catch (Exception e) {
             System.out.println("Error sending OTP: " + e.getMessage()); // Log the error
