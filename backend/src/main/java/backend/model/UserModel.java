@@ -24,8 +24,8 @@ public class UserModel {
 
     // New field for email verification status
     // To fix the email verification issue.
-    // private boolean verified = false; // Default to false
-    // private String otp;
+    private boolean verified = false; // Default to false
+    private String otp;
 
     public UserModel() {}
 
@@ -121,19 +121,19 @@ public class UserModel {
 
     // New getter and setter for verified field.
     // To fix the email verification issue.
-    // public boolean isVerified() {
-    //     return verified;
-    // }
+    public boolean isVerified() {
+        return verified;
+    }
     
-    // public void setVerified(boolean verified) {
-    //     this.verified = verified;
-    // }
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
 
-    // public String getOtp() {
-    //     return otp;
-    // }
+    public String getOtp() {
+        return otp;
+    }
     
-    // public void setOtp(String otp) {
-    //     this.otp = otp;
-    // }
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
 }
