@@ -148,42 +148,60 @@ public class UserController {
     // New endpoint to verify OTP and complete registration
     @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
-        System.out.println("\n\nEndpoint /verifyOtp called for OTP verification.\n\n"); // Log endpoint usage
         String email = request.get("email") != null ? request.get("email").trim() : null;
         String otp = request.get("otp") != null ? request.get("otp").trim() : null;
     
-        System.out.println("Verifying OTP for email: " + email + ", OTP: " + otp); // Log the input
-    
-        if (email == null || otp == null) {
-            System.out.println("Email or OTP is null."); // Log null values
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and OTP are required."));
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email is required."));
         }
     
+        // Check if OTP is provided (verification step)
+        if (otp != null) {
+            System.out.println("Verifying OTP for email: " + email + ", OTP: " + otp);
+    
+            UserModel user = temporaryUserStorage.get(email);
+            if (user == null) {
+                System.out.println("User not found in temporary storage for email: " + email);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
+            }
+    
+            System.out.println("Stored OTP for email: " + email + " is: " + user.getOtp());
+    
+            if (user.getOtp().equals(otp)) {
+                user.setVerified(true); // Mark user as verified
+                user.setOtp(null); // Clear OTP
+    
+                try {
+                    System.out.println("Attempting to save user to database: " + user);
+                    userRepository.save(user); // Save user to the database
+                    temporaryUserStorage.remove(email); // Remove from temporary storage
+                    System.out.println("User saved to database: " + user.getEmail());
+                    return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
+                } catch (Exception e) {
+                    System.out.println("Error saving user to database: " + e.getMessage());
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user to database."));
+                }
+            } else {
+                System.out.println("Invalid OTP for email: " + email);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP."));
+            }
+        }
+    
+        // If OTP is not provided, generate and send a new OTP (registration step)
+        String generatedOtp = generateOtp();
         UserModel user = temporaryUserStorage.get(email);
         if (user == null) {
-            System.out.println("User not found in temporary storage for email: " + email); // Log missing user
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found or OTP expired."));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "User not found in temporary storage."));
         }
     
-        System.out.println("Stored OTP for email: " + email + " is: " + user.getOtp()); // Log the stored OTP
-    
-        if (user.getOtp().equals(otp)) {
-            user.setVerified(true); // Mark user as verified
-            user.setOtp(null); // Clear OTP
-    
-            try {
-                System.out.println("Attempting to save user to database: " + user); // Log before saving
-                userRepository.save(user); // Save user to the database
-                temporaryUserStorage.remove(email); // Remove from temporary storage
-                System.out.println("User saved to database: " + user.getEmail()); // Log success
-                return ResponseEntity.ok(Map.of("message", "Email verified successfully!"));
-            } catch (Exception e) {
-                System.out.println("Error saving user to database: " + e.getMessage()); // Log the error
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user to database."));
-            }
-        } else {
-            System.out.println("Invalid OTP for email: " + email); // Log invalid OTP
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Invalid OTP."));
+        user.setOtp(generatedOtp);
+        try {
+            sendOtpEmail(email, generatedOtp);
+            System.out.println("OTP sent to email: " + email + ", OTP: " + generatedOtp);
+            return ResponseEntity.ok(Map.of("message", "OTP sent to your email. Please verify to complete registration."));
+        } catch (Exception e) {
+            System.out.println("Error sending OTP: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to send OTP."));
         }
     }
 
@@ -379,26 +397,26 @@ public class UserController {
     }
 
     // email verification code issue persists. user added to database before email is verified
-    @PostMapping("/sendVerificationCode")
-    public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
-        System.out.println("\n\nEndpoint /sendVerificationCode called.\n\n"); // Log endpoint usage
-        String email = request.get("email");
-        String code = request.get("code");
+    // @PostMapping("/sendVerificationCode")
+    // public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
+    //     System.out.println("\n\nEndpoint /sendVerificationCode called.\n\n"); // Log endpoint usage
+    //     String email = request.get("email");
+    //     String code = request.get("code");
 
-        if (email == null || code == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and code are required."));
-        }
+    //     if (email == null || code == null) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email and code are required."));
+    //     }
 
-        try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(email);
-            message.setSubject("Your Verification Code");
-            message.setText("Your verification code is: " + code);
-            mailSender.send(message);
+    //     try {
+    //         SimpleMailMessage message = new SimpleMailMessage();
+    //         message.setTo(email);
+    //         message.setSubject("Your Verification Code");
+    //         message.setText("Your verification code is: " + code);
+    //         mailSender.send(message);
 
-            return ResponseEntity.ok(Map.of("message", "Verification code sent successfully."));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to send verification code."));
-        }
-    }
+    //         return ResponseEntity.ok(Map.of("message", "Verification code sent successfully."));
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to send verification code."));
+    //     }
+    // }
 }
