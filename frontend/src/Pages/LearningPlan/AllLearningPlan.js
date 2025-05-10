@@ -146,7 +146,7 @@ function AllLearningPlan() {
                 {post.imageUrl && (
                   <div className="learning-media">
                     <img
-                      src={`http://localhost:8080/learningPlan/planImages/${post.imageUrl}`}
+                      src={post.imageUrl}
                       alt={post.title}
                     />
                   </div>

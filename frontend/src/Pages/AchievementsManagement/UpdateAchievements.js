@@ -27,7 +27,7 @@ function UpdateAchievements() {
         const data = await response.json();
         setFormData(data);
         if (data.imageUrl) {
-          setPreviewImage(`http://localhost:8080/achievements/images/${data.imageUrl}`);
+          setPreviewImage(data.imageUrl);
         }
       } catch (error) {
         console.error('Error fetching Achievements data:', error);
