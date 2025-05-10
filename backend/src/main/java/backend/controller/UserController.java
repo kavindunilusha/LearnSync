@@ -142,8 +142,8 @@ public class UserController {
     // New endpoint to verify OTP and complete registration
     @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        String otp = request.get("otp");
+        String email = request.get("email") != null ? request.get("email").trim() : null;
+        String otp = request.get("otp") != null ? request.get("otp").trim() : null;
 
         System.out.println("Verifying OTP for email: " + email + ", OTP: " + otp); // Log the input
 
