@@ -291,48 +291,56 @@ function MyAllPost() {
         post.description.toLowerCase().includes(query) ||
         (post.category && post.category.toLowerCase().includes(query))
     );
-    setFilteredPosts(filtered);
+    setFilteredPosts(filtered);// Update the filtered posts to show in the UI
   };
 
   const openModal = (mediaUrl) => {
-    setSelectedMedia(mediaUrl);
-    setIsModalOpen(true);
+    setSelectedMedia(mediaUrl);// Set the selected media (image/video) to preview
+    setIsModalOpen(true);// Open the media modal
   };
 
   const closeModal = () => {
-    setSelectedMedia(null);
-    setIsModalOpen(false);
+    setSelectedMedia(null);// Clear selected media
+    setIsModalOpen(false);// Close the media modal
   };
 
   return (
     <div>
       <div className='continer'>
+        {/* Navigation Bar */}
         <NavBar />
         <div className='continSection'>
+          {/* Search Input for Filtering Posts */}
           <div className='searchinput'>
             <input
               type="text"
               className="Auth_input "
-              placeholder="Search posts by title, description, or category"
-              value={searchQuery}
-              onChange={handleSearch}
+              placeholder="Search posts..."
+              value={searchQuery} // Binds the search query to the input field
+              onChange={handleSearch} // Triggers the handleSearch function on input change
             />
           </div>
+          {/* Button to Create New Post */}
           <div className='add_new_btn' onClick={() => (window.location.href = '/addNewPost')}>
-            <IoIosCreate className='add_new_btn_icon' />
+            <IoIosCreate className='add_new_btn_icon' />{/* Icon for creating new post */}
           </div>
+
+          {/* Displaying Posts */}
           <div className='post_card_continer'>
+            {/* If no filtered posts, show a "No posts found" message */}
             {filteredPosts.length === 0 ? (
               <div className='not_found_box'>
                 <div className='not_found_img'></div>
                 <p className='not_found_msg'>No posts found. Please create a new post.</p>
-                <button className='not_found_btn' onClick={() => (window.location.href = '/addNewPost')}>Create New Post</button>
+                <button className='not_found_btn' onClick={() => (window.location.href = '/addNewPost')}>Create New Post</button>{/* Button to navigate to create post */}
               </div>
             ) : (
+              // Map through filtered posts and display each one
               filteredPosts.map((post) => (
                 <div key={post.id} className='post_card'>
                   <div className='user_details_card'>
                     <div className='name_section_post'>
+                      {/* Display the post owner's name */}
                       <p className='name_section_post_owner_name'>{postOwners[post.userID] || 'Anonymous'}</p>
                       {post.userID !== loggedInUserID && (
                         <button
@@ -343,14 +351,16 @@ function MyAllPost() {
                         </button>
                       )}
                     </div>
+
+                    {/* Action buttons for posts created by the logged-in user */}
                     {post.userID === loggedInUserID && (
                       <div>
                         <div className='action_btn_icon_post'>
                           <FaEdit
-                            onClick={() => handleUpdate(post.id)} className='action_btn_icon' />
+                            onClick={() => handleUpdate(post.id)} className='action_btn_icon' />{/* Edit the post*/}
                           <RiDeleteBin6Fill
                             onClick={() => handleDelete(post.id)}
-                            className='action_btn_icon' />
+                            className='action_btn_icon' />{/*Delete the post*/}
                         </div>
                       </div>
                     )}
