@@ -296,7 +296,7 @@ function AllPost() {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
 
-    const validCategories = ['jewelry making', 'painting', 'woodworking', 'crochet', 'other creative'];
+    const validCategories = ['ai and data science','web framework','social media','graphic design','other creative'];
     let filtered = posts;
 
     if (validCategories.includes(query)) {

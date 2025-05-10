@@ -176,7 +176,7 @@ function UpdatePost() {
                   onChange={(e) => setCategory(e.target.value)}
                   required
                 >
-                  <option value="" disabled>Select Category</option>
+                <option value="" disabled>Select Category</option>
                 <option value="AI and Data Science">AI and Data Science</option>
                 <option value="Web Development">Web Development</option>
                 <option value="Social Media">Social Media</option>
