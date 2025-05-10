@@ -18,12 +18,12 @@ import './PostManagement.css';
 Modal.setAppElement('#root');
 
 function AllPost() {
-  const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);
-  const [postOwners, setPostOwners] = useState({});
-  const [showMyPosts, setShowMyPosts] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [posts, setPosts] = useState([]);// Holds all fetched posts from the backend
+  const [filteredPosts, setFilteredPosts] = useState([]);// Holds the currently filtered list of posts
+  const [postOwners, setPostOwners] = useState({});// Maps user IDs to full names for displaying post owner names
+  const [showMyPosts, setShowMyPosts] = useState(false);// Controls whether to show only the logged-in user's posts
+  const [isModalOpen, setIsModalOpen] = useState(false);// Controls the visibility of the media preview modal
+  const [selectedMedia, setSelectedMedia] = useState(null);// Stores the currently selected media URL to be shown in the modal
   const [followedUsers, setFollowedUsers] = useState([]); // State to track followed users
   const [newComment, setNewComment] = useState({}); // State for new comments
   const [editingComment, setEditingComment] = useState({}); // State for editing comments
