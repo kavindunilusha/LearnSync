@@ -18,12 +18,12 @@ import { FaCommentAlt } from "react-icons/fa";
 Modal.setAppElement('#root');
 
 function MyAllPost() {
-  const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]);// Stores all fetched posts from the backend
-  const [postOwners, setPostOwners] = useState({});// Stores posts after applying filters
-  const [showMyPosts, setShowMyPosts] = useState(false);// mapp post IDs to user details
-  const [isModalOpen, setIsModalOpen] = useState(false);// Controls whether to show only the current user's posts
-  const [selectedMedia, setSelectedMedia] = useState(null);// Controls visibility of the media modal (e.g., image or video viewer)
+  const [posts, setPosts] = useState([]);// Stores all fetched posts from the backend
+  const [filteredPosts, setFilteredPosts] = useState([]);// Stores posts after applying filters
+  const [postOwners, setPostOwners] = useState({});// mapp post IDs to user details
+  const [showMyPosts, setShowMyPosts] = useState(false);// Controls whether to show only the current user's posts
+  const [isModalOpen, setIsModalOpen] = useState(false);// Controls visibility of the media modal
+  const [selectedMedia, setSelectedMedia] = useState(null);// Stores the media item currently selected
   const [followedUsers, setFollowedUsers] = useState([]); // State to track followed users
   const [newComment, setNewComment] = useState({}); // State for new comments
   const [editingComment, setEditingComment] = useState({}); // State for editing comments
@@ -64,7 +64,7 @@ function MyAllPost() {
           return acc;
         }, {});
         console.log('Post Owners Map:', ownerMap); // Debug log to verify postOwners map
-        setPostOwners(ownerMap);
+        setPostOwners(ownerMap);// Update the state so the UI can use this mapping
       } catch (error) {
         console.error('Error fetching posts:', error); // Log error for fetching posts
       }
@@ -90,17 +90,22 @@ function MyAllPost() {
   }, []);
 
   const handleDelete = async (postId) => {
+    // Show a confirmation dialog to the user
     const confirmDelete = window.confirm('Are you sure you want to delete this post?');
     if (!confirmDelete) {
       return; // Exit if the user cancels the confirmation
     }
 
     try {
+      // Send a DELETE request to the backend to remove the post
       await axios.delete(`http://localhost:8080/posts/${postId}`);
+      // Notify the user of successful deletion
       alert('Post deleted successfully!');
+      // Update the local state to remove the deleted post from the list
       setPosts(posts.filter((post) => post.id !== postId)); // Remove the deleted post from the UI
       setFilteredPosts(filteredPosts.filter((post) => post.id !== postId)); // Update filtered posts
     } catch (error) {
+       // Handle any errors that occur during the delete operation
       console.error('Error deleting post:', error);
       alert('Failed to delete post.');
     }
