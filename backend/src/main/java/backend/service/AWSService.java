@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 public class AWSService {
@@ -22,17 +23,68 @@ public class AWSService {
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
 
-    public String upload(MultipartFile file) throws AmazonServiceException, SdkClientException, IOException {
+    /**
+     * Uploads a file to the specified path in the S3 bucket
+     * @param file The file to upload
+     * @param path The path within the bucket (can be file name or path/filename)
+     * @return The URL of the uploaded file
+     */
+    public String upload(MultipartFile file, String path) throws AmazonServiceException, SdkClientException, IOException {
+        String key = path;
+
+        if (path == null || path.trim().isEmpty()) {
+            key = file.getOriginalFilename();
+        }
 
         ObjectMetadata metadata = new ObjectMetadata();
-        amazonS3.putObject(bucketName, file.getName(), file.getInputStream(), metadata);
-        return "File Uploaded Successfully";
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+
+        amazonS3.putObject(bucketName, key, file.getInputStream(), metadata);
+
+        // Return the S3 URL of the uploaded file
+        return amazonS3.getUrl(bucketName, key).toString();
     }
 
-    public Resource download(String filename) throws IOException {
-        S3Object s3Object = amazonS3.getObject(bucketName, filename);
-        var bytes = s3Object.getObjectContent().readAllBytes();
-        Resource resource = new ByteArrayResource(bytes);
-        return resource;
+    public Resource download(String filename, String path) throws IOException {
+        String key = filename;
+
+        if (path != null && !path.trim().isEmpty()) {
+            path = path.replaceAll("/+$", ""); // remove trailing slashes
+            key = path + "/" + filename;
+        }
+
+        S3Object s3Object = amazonS3.getObject(bucketName, key);
+        try (InputStream inputStream = s3Object.getObjectContent()) {
+            // Read the entire file into a byte array
+            byte[] bytes = inputStream.readAllBytes();
+
+            // Return a ByteArrayResource with filename override
+            return new ByteArrayResource(bytes) {
+                @Override
+                public String getFilename() {
+                    return filename;
+                }
+            };
+        }
+    }
+
+    /**
+     * Deletes a file from the S3 bucket
+     * @param key The key (path/filename) of the file to delete
+     */
+    public void deleteFile(String key) {
+        if (key != null && !key.isEmpty()) {
+            amazonS3.deleteObject(bucketName, key);
+        }
+    }
+
+    /**
+     * Gets the publicly accessible URL for a file in S3
+     * @param key The key (path/filename) of the file
+     * @return The public URL
+     */
+    public String getFileUrl(String key) {
+        return amazonS3.getUrl(bucketName, key).toString();
     }
 }

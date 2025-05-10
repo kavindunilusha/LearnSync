@@ -27,7 +27,7 @@ function UpdateAchievements() {
         const data = await response.json();
         setFormData(data);
         if (data.imageUrl) {
-          setPreviewImage(`http://localhost:8080/achievements/images/${data.imageUrl}`);
+          setPreviewImage(data.imageUrl);
         }
       } catch (error) {
         console.error('Error fetching Achievements data:', error);
@@ -165,11 +165,14 @@ function UpdateAchievements() {
                   required
                 >
                   <option value="" disabled>Select Category</option>
-                  <option value="Woodworking">Woodworking</option>
-                  <option value="Painting">Painting</option>
-                  <option value="Jewelry making">Jewelry making</option>
-                  <option value="Crochet">Crochet</option>
-                  <option value="Other creative">Other creative</option>
+                  <option value="AI and Data Science">AI and Data Science</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="Backend Development">Backend Development</option>
+                  <option value="DevOps">DevOps</option>
+                  <option value="Social Media">Social Media</option>
+                  <option value="Photograpya and Video Editing">Photograpy and Video Editing</option>
+                  <option value="Graphic Design">Graphic Design</option>
+                  <option value="Creative Writing for Beginner">Creative Writing for Beginners</option>
                 </select>
               </div>
 

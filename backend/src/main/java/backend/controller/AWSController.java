@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLConnection;
 
 @RestController("/app")
 public class AWSController {
@@ -21,20 +22,31 @@ public class AWSController {
     AWSService service;
 
     @PostMapping("/upload")
-    public String upload(@RequestParam("file")MultipartFile file) throws Exception {
-        service.upload(file);
+    public String upload(@RequestParam("file")MultipartFile file,
+                         @RequestParam(value = "path", required = false, defaultValue = "") String path) throws Exception {
+        service.upload(file, path);
         return "File Uploaded Successfully";
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename) {
-        Resource resource = null;
-        try {
-            resource = service.download(filename);
-            String contentType = "application/octet-stream";
 
-            return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename())
+    @GetMapping(value = "/download")
+    public ResponseEntity<Resource> downloadFile(@RequestParam("filename") String filename,
+                                                 @RequestParam(value = "path", required = false, defaultValue = "") String path) {
+        try {
+            Resource resource = service.download(filename, path);
+
+            // Determine content type
+            String contentType = "application/octet-stream";
+            try {
+                contentType = URLConnection.guessContentTypeFromName(resource.getFilename());
+            } catch (Exception e) {
+                // Use default content type if type cannot be determined
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment; filename=\"" + resource.getFilename() + "\"")
                     .body(resource);
         } catch (Exception e) {
             e.printStackTrace();
