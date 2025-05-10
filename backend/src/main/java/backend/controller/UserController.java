@@ -93,26 +93,30 @@ public class UserController {
         if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
             newUserModel.getPassword() == null || newUserModel.getBio() == null || 
             newUserModel.getSkills() == null) {
+            System.out.println("Missing required fields in registration."); // Log the error
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Missing required fields."));
         }
-
+    
         if (userRepository.existsByEmail(newUserModel.getEmail())) {
+            System.out.println("Registration failed: Email already exists."); // Log the error
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Email already exists!"));
         }
-
+    
         // Generate OTP
         String otp = generateOtp();
         newUserModel.setOtp(otp);
         newUserModel.setVerified(false); // Mark user as unverified
-
+    
         // Send OTP to user's email
         try {
             sendOtpEmail(newUserModel.getEmail(), otp);
-            // Temporarily store user details in memory (or a cache, if needed)
+            // Temporarily store user details in memory
             temporaryUserStorage.put(newUserModel.getEmail(), newUserModel);
-
+    
+            System.out.println("OTP sent to email: " + newUserModel.getEmail()); // Log success
             return ResponseEntity.ok(Map.of("message", "OTP sent to your email. Please verify to complete registration."));
         } catch (Exception e) {
+            System.out.println("Error sending OTP: " + e.getMessage()); // Log the error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to send OTP."));
         }
     }
