@@ -168,7 +168,7 @@ function UpdateLearningPost() {
                     </div>
                   ) : existingImage && (
                     <div className="image-preview-achi">
-                      <img src={`http://localhost:8080/learningPlan/planImages/${existingImage}`} alt="Existing" className="iframe_preview_new" />
+                      <img src={existingImage} alt="Existing" className="iframe_preview_new" />
                     </div>
                   )}
                 </div>
@@ -193,7 +193,7 @@ function UpdateLearningPost() {
                 </div>
               ) : existingImage && (
                 <div className="image-preview-achi">
-                  <img src={`http://localhost:8080/learningPlan/planImages/${existingImage}`} alt="Existing" className="iframe_preview" />
+                  <img src={existingImage} alt="Existing" className="iframe_preview" />
                 </div>
               )}
               {contentURL && (
@@ -238,7 +238,7 @@ function UpdateLearningPost() {
                   </div>
                 ) : existingImage && (
                   <div className="image-preview-achi">
-                    <img src={`http://localhost:8080/learningPlan/planImages/${existingImage}`} alt="Existing" className="image-preview-achi" />
+                    <img src={existingImage} alt="Existing" className="image-preview-achi" />
                   </div>
                 )}
                 <input
