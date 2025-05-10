@@ -121,10 +121,12 @@ function AllPost() {
     }
   };
 
+  // Navigates to the update post page with the selected post ID
   const handleUpdate = (postId) => {
     navigate(`/updatePost/${postId}`); // Navigate to the UpdatePost page with the post ID
   };
 
+  // Toggles between showing all posts and only the logged-in user's posts
   const handleMyPostsToggle = () => {
     if (showMyPosts) {
       // Show all posts
