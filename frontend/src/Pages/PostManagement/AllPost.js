@@ -356,7 +356,7 @@ function AllPost() {
                 className="create-button"
                 onClick={() => (window.location.href = '/addNewPost')}// Redirect to post creation
               >
-                Create Post
+                Create Skill Post
               </button>
             </div>
           ) : (
