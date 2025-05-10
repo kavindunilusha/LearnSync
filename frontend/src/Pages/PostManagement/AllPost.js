@@ -65,20 +65,22 @@ function AllPost() {
               return { userID, fullName: 'Anonymous' };
             })
         );
-        const owners = await Promise.all(ownerPromises);
+        const owners = await Promise.all(ownerPromises);// Wait for all user detail fetch requests to complete
+
+        // Convert the array into an object
         const ownerMap = owners.reduce((acc, owner) => {
           acc[owner.userID] = owner.fullName;
           return acc;
         }, {});
         console.log('Post Owners Map:', ownerMap); // Debug log to verify postOwners map
-        setPostOwners(ownerMap);
+        setPostOwners(ownerMap);// Store the owner map in state for use in the UI
       } catch (error) {
         console.error('Error fetching posts:', error); // Log error for fetching posts
       }
     };
 
-    fetchPosts();
-  }, []);
+    fetchPosts();// Call the async function
+  }, []);// ensures useEffect runs only once
 
   useEffect(() => {
     const fetchFollowedUsers = async () => {
