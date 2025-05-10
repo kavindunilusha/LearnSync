@@ -72,14 +72,14 @@ public class UserController {
     //     }
         
     //     //issue: account is added to database before email is verified
-    //     try {
-    //         UserModel savedUser = userRepository.save(newUserModel);
-    //         System.out.println("User registered successfully: " + savedUser.getId()); // Log success
-    //         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
-    //     } catch (Exception e) {
-    //         System.out.println("Error saving user: " + e.getMessage()); // Log the error
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user."));
-    //     }
+        // try {
+        //     UserModel savedUser = userRepository.save(newUserModel);
+        //     System.out.println("User registered successfully: " + savedUser.getId()); // Log success
+        //     return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        // } catch (Exception e) {
+        //     System.out.println("Error saving user: " + e.getMessage()); // Log the error
+        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Failed to save user."));
+        // }
     // }
 
 
@@ -90,6 +90,7 @@ public class UserController {
     //Replace the above code with the following to fix the email verification issue:
     @PostMapping("/user")
     public ResponseEntity<?> newUserModel(@RequestBody UserModel newUserModel) {
+        System.out.println("Endpoint /user called for user registration."); // Log endpoint usage
         if (newUserModel.getEmail() == null || newUserModel.getFullname() == null || 
             newUserModel.getPassword() == null || newUserModel.getBio() == null || 
             newUserModel.getSkills() == null) {
@@ -147,6 +148,7 @@ public class UserController {
     // New endpoint to verify OTP and complete registration
     @PostMapping("/verifyOtp")
     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
+        System.out.println("\n\nEndpoint /verifyOtp called for OTP verification.\n\n"); // Log endpoint usage
         String email = request.get("email") != null ? request.get("email").trim() : null;
         String otp = request.get("otp") != null ? request.get("otp").trim() : null;
     
@@ -379,6 +381,7 @@ public class UserController {
     // email verification code issue persists. user added to database before email is verified
     @PostMapping("/sendVerificationCode")
     public ResponseEntity<?> sendVerificationCode(@RequestBody Map<String, String> request) {
+        System.out.println("\n\nEndpoint /sendVerificationCode called.\n\n"); // Log endpoint usage
         String email = request.get("email");
         String code = request.get("code");
 
