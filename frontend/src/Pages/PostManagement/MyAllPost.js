@@ -281,8 +281,8 @@ function MyAllPost() {
   };
 
   const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
+    const query = e.target.value.toLowerCase();// Get the search query and convert to lowercase
+    setSearchQuery(query); // Update the search query state
 
     // Filter posts based on title, description, or category
     const filtered = posts.filter(
